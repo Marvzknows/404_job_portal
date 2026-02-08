@@ -20,4 +20,9 @@ class JobSeeker extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function jobApplications()
+    {
+        return $this->hasMany(JobApplication::class);
+    }
 }
