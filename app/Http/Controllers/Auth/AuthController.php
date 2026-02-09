@@ -18,7 +18,6 @@ class AuthController extends Controller
     }
     public function register(RegisterRequest $request)
     {
-        // Validate and create a new user
         $validated = $request->validated();
         $this->authServiceInterface->register($validated);
         return response()->json(['message' => 'User registered successfully']);
@@ -26,9 +25,18 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request)
     {
-        // Authenticate the user and return a token
         $validated = $request->validated();
-        return response()->json(['message' => 'User logged in successfully', 'token' => 'sample_token', "payload" => $validated]);
+        $data = $this->authServiceInterface->login($validated);
+        return response()->json([
+            'message' => 'Login successful',
+            'user' => [
+                'id' => $data['user']->id,
+                'name' => $data['user']->name,
+                'email' => $data['user']->email,
+                'role' => $data['user']->role,
+            ],
+            'token' => $data['token'],
+        ]);
     }
 
     public function logout(Request $request)
