@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Repositories\Auth;
+
 interface UserRepositoryInterface
 {
     public function findByEmail(string $email);
