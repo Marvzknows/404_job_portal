@@ -37,5 +37,12 @@ class AuthService implements AuthServiceInterface
         ];
     }
 
-    public function logout($user) {}
+    public function logout($user)
+    {
+        try {
+            $user->tokens()->delete();
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
 }

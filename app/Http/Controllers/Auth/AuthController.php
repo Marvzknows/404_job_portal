@@ -41,7 +41,7 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        // Invalidate the user's token
+        $this->authServiceInterface->logout($request->user());
         return response()->json(['message' => 'User logged out successfully']);
     }
 }
