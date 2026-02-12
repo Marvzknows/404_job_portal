@@ -14,4 +14,14 @@ Route::get('/test', function () {
 // Authentication routes
 Route::post('/register', [App\Http\Controllers\Auth\AuthController::class, 'register']);
 Route::post('/login', [App\Http\Controllers\Auth\AuthController::class, 'login']);
-Route::post('/logout', [App\Http\Controllers\Auth\AuthController::class, 'logout'])->middleware('auth:sanctum');
+
+Route::middleware([
+    'api',
+    'auth:sanctum',
+])->group(function () {
+    Route::post('/logout', [App\Http\Controllers\Auth\AuthController::class, 'logout'])
+        ->name('logout');
+
+    Route::get('/me', [App\Http\Controllers\Auth\AuthController::class, 'me'])
+        ->name('me');
+});

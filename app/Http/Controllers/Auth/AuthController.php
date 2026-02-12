@@ -16,6 +16,15 @@ class AuthController extends Controller
     {
         $this->authServiceInterface = $authServiceInterface;
     }
+
+    public function me(Request $request)
+    {
+        $data = $this->authServiceInterface->me($request->user());
+        return response()->json([
+            'user' => $data,
+            'profile' => $data['profile'] ?? 'Wala pang profile',
+        ]);
+    }
     public function register(RegisterRequest $request)
     {
         $validated = $request->validated();

@@ -45,4 +45,17 @@ class AuthService implements AuthServiceInterface
             return false;
         }
     }
+
+    public function me($user)
+    {
+        $user = $this->userRepositoryInterface->getAuthenticatedUserWithProfile($user->id);
+        if ($user->role === 'employer') {
+            $data['profile'] = $user->employer;
+        }
+
+        if ($user->role === 'job_seeker') {
+            $data['profile'] = $user->jobSeeker;
+        }
+        return $data;
+    }
 }

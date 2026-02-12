@@ -17,4 +17,9 @@ class UserRepository implements UserRepositoryInterface
     {
         return User::where('email', $email)->first();
     }
+
+    public function getAuthenticatedUserWithProfile(int $userId)
+    {
+        return User::with(['employer', 'jobSeeker'])->find($userId);
+    }
 }
