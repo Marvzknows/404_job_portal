@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('employers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->unsignedBigInteger('logo_id')->nullable();
             $table->string('company_name');
             $table->string('company_description')->nullable();
-            $table->string('logo')->nullable();
             $table->string('website')->nullable();
             $table->string('contact_email')->nullable();
             $table->string('contact_phone')->nullable();
