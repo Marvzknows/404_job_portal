@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\JobApplication;
+use App\Models\Employer;
 
 class JobListing extends Model
 {
