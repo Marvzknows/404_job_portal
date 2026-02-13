@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Repositories\Auth\UserRepositoryInterface;
 use App\Repositories\Auth\UserRepository;
+use App\Repositories\Employer\EmployerRepository;
+use App\Repositories\Employer\EmployerRepositoryInterface;
 use App\Repositories\File\FileRepository;
 use App\Repositories\File\FileRepositoryInterface;
 use App\Services\Auth\AuthService;
@@ -21,8 +23,9 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(AuthServiceInterface::class,  AuthService::class);
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
-        $this->app->bind(EmployerServiceInterface::class, EmployerService::class);
         $this->app->bind(FileRepositoryInterface::class, FileRepository::class);
+        $this->app->bind(EmployerServiceInterface::class, EmployerService::class);
+        $this->app->bind(EmployerRepositoryInterface::class, EmployerRepository::class);
     }
 
     /**

@@ -9,8 +9,11 @@ use App\Repositories\File\FileRepositoryInterface;
 
 class FileRepository implements FileRepositoryInterface
 {
-    public function store(UploadedFile $file, int $uploadedBy, string $directory = 'public')
-    {
+    public function store(
+        UploadedFile $file,
+        int $uploadedBy,
+        string $directory = 'fileUploads'
+    ) {
         // Store in public disc
         $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
         $path = $file->storeAs($directory, $fileName, 'public');

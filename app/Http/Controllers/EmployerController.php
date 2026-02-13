@@ -17,8 +17,14 @@ class EmployerController extends Controller
     public function store(StoreEmployerProfile $request)
     {
         $data = $request->validated();
-        $result = $this->employerServiceInterface->createEmployerProfile($data, $request->user());
-        return ['message' => $result];
+        $logo = $request->file('logo');
+
+        $data = $this->employerServiceInterface->createEmployerProfile($data, $request->user(), $logo);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Employer profile created successfully'
+        ]);
     }
 
     /**
