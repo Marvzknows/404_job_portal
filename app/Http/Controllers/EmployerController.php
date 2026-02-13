@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreEmployerProfile;
 use Illuminate\Http\Request;
 
 class EmployerController extends Controller
@@ -9,9 +10,10 @@ class EmployerController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreEmployerProfile $request)
     {
-        return ['message' => 'CREATE employer profile'];
+        $data = $request->validated();
+        return ['message' => $data];
     }
 
     /**
