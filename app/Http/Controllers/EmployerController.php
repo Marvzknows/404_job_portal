@@ -3,17 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreEmployerProfile;
+use App\Services\Employer\EmployerServiceInterface;
 use Illuminate\Http\Request;
 
 class EmployerController extends Controller
 {
-    /**
-     * Store a newly created resource in storage.
-     */
+    private EmployerServiceInterface $employerServiceInterface;
+
+    public function __construct(EmployerServiceInterface $employerServiceInterface)
+    {
+        $this->employerServiceInterface = $employerServiceInterface;
+    }
     public function store(StoreEmployerProfile $request)
     {
         $data = $request->validated();
-        return ['message' => $data];
+        $result = $this->employerServiceInterface->createEmployerProfile($data, $request->user());
+        return ['message' => $result];
     }
 
     /**
