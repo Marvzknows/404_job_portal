@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreEmployerProfile;
+use App\Http\Resources\ShowEmployerProfileResource;
 use App\Services\Employer\EmployerServiceInterface;
 use Illuminate\Http\Request;
 
@@ -35,7 +36,7 @@ class EmployerController extends Controller
         $employer = $this->employerServiceInterface->showEmployerProfile($employerId);
         return response()->json([
             'success' => true,
-            'data' => $employer
+            'data' => new ShowEmployerProfileResource($employer)
         ]);
     }
 

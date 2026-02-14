@@ -9,7 +9,7 @@ class EmployerRepository implements EmployerRepositoryInterface
 
     public function findById(int $employerId): Employer
     {
-        return Employer::with('logo', 'user', 'jobListings')->findOrFail($employerId);
+        return Employer::with('logo.uploadedBy', 'user', 'jobListings')->findOrFail($employerId);
     }
 
     public function userHasProfile(int $userId)
