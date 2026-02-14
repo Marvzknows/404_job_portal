@@ -56,4 +56,9 @@ class EmployerService implements EmployerServiceInterface
             return $this->employerRepositoryInterface->create($employerData);
         });
     }
+
+    public function showEmployerProfile(int $employerId)
+    {
+        return $this->employerRepositoryInterface->findById($employerId);
+    }
 }

@@ -8,4 +8,6 @@ interface EmployerServiceInterface
 {
 
     public function createEmployerProfile(array $data, User $user, $logo = null);
+
+    public function showEmployerProfile(int $employerId);
 }

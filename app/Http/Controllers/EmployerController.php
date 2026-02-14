@@ -30,9 +30,13 @@ class EmployerController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $employerId)
     {
-        return ['message' => 'VIEW employer profile'];
+        $employer = $this->employerServiceInterface->showEmployerProfile($employerId);
+        return response()->json([
+            'success' => true,
+            'data' => $employer
+        ]);
     }
 
     /**

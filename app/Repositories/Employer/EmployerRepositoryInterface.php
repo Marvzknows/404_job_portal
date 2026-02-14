@@ -2,10 +2,12 @@
 
 namespace App\Repositories\Employer;
 
+use App\Models\Employer;
+
 interface EmployerRepositoryInterface
 {
 
-    public function findById(int $employerId);
+    public function findById(int $employerId): Employer;
 
     public function userHasProfile(int $userId);
 
