@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\EmployerController;
+use App\Http\Middleware\EmployerRoleMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -29,7 +30,7 @@ Route::middleware([
 });
 
 // Employer routes
-Route::middleware(['auth:sanctum'])->prefix('employer')->group(function () {
+Route::middleware(['auth:sanctum', EmployerRoleMiddleware::class])->prefix('employer')->group(function () {
     Route::post('/create', [EmployerController::class, 'store'])->name('employer.store');
     Route::get('/{id}', [EmployerController::class, 'show'])->name('employer.show');
     Route::put('/{id}', [EmployerController::class, 'update'])->name('employer.update');
