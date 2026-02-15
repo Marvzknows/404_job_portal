@@ -35,4 +35,13 @@ Route::middleware(['auth:sanctum', EmployerRoleMiddleware::class])->prefix('empl
     Route::get('/{id}', [EmployerController::class, 'show'])->name('employer.show');
     Route::put('/{id}', [EmployerController::class, 'update'])->name('employer.update');
     Route::delete('/{id}', [EmployerController::class, 'destroy'])->name('employer.destroy');
+
+
+    // TO-DO (prefix: jobs)
+    // POST   employer/jobs
+    // GET    employer/jobs/list (paginated, search by title)
+    // GET    employer/jobs/{job}
+    // PUT    employer/jobs/{job}
+    // DELETE employer/jobs/{job}
+
 });
