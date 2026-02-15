@@ -20,6 +20,6 @@ class UserRepository implements UserRepositoryInterface
 
     public function getAuthenticatedUserWithProfile(int $userId)
     {
-        return User::with(['employer', 'jobSeeker'])->find($userId);
+        return User::with(['employer.logo.uploadedBy', 'jobSeeker',])->find($userId);
     }
 }

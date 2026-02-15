@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Resources\MeResource;
 use App\Services\Auth\AuthServiceInterface;
 use Illuminate\Http\Request;
 
@@ -21,8 +22,8 @@ class AuthController extends Controller
     {
         $data = $this->authServiceInterface->me($request->user());
         return response()->json([
-            'user' => $data,
-            'profile' => $data['profile'] ?? 'Wala pang profile',
+            'success' => true,
+            'data' => new MeResource($data),
         ]);
     }
     public function register(RegisterRequest $request)
