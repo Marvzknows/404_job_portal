@@ -55,4 +55,9 @@ class EmployerController extends Controller
     {
         return ['message' => 'REMOVE employer profile'];
     }
+
+    public function updateLogo($employerId)
+    {
+        return ['message' => 'Update employer logo' . ' ' . $employerId];
+    }
 }
