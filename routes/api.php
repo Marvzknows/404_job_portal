@@ -47,6 +47,7 @@ Route::middleware(['auth:sanctum', EmployerRoleMiddleware::class])->prefix('empl
         Route::put('/{job}', [JobController::class, 'update'])->name('jobs.update');
         Route::delete('/{job}', [JobController::class, 'destroy'])->name('jobs.destroy');
         Route::post('/{job}/restore', [JobController::class, 'restore'])->name('jobs.restore');
+        Route::put('/{job}/status', [JobController::class, 'status'])->name('jobs.status');
     });
     #endregion
 });
