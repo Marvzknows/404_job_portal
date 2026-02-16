@@ -14,4 +14,6 @@ interface EmployerRepositoryInterface
     public function create(array $data);
 
     public function updateEmployerProfile(int $employerId, array $data): Employer;
+
+    public function deleteEmployer(int $employerId);
 }

@@ -34,7 +34,7 @@ Route::middleware(['auth:sanctum', EmployerRoleMiddleware::class])->prefix('empl
     Route::post('/create', [EmployerController::class, 'store'])->name('employer.store');
     Route::get('/{id}', [EmployerController::class, 'show'])->name('employer.show');
     Route::put('/{employerId}', [EmployerController::class, 'update'])->name('employer.update');
-    Route::delete('/{id}', [EmployerController::class, 'destroy'])->name('employer.destroy');
+    Route::delete('/{employerId}', [EmployerController::class, 'destroy'])->name('employer.destroy');
     Route::post('/{employerId}/logo', [EmployerController::class, 'updateLogo'])->name('employer.updateLogo');
 
     // TO-DO (prefix: jobs)

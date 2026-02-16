@@ -5,16 +5,19 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreEmployerProfile;
 use App\Http\Requests\UpdateEmployerProfileRequest;
 use App\Http\Resources\ShowEmployerProfileResource;
+use App\Repositories\Employer\EmployerRepositoryInterface;
 use App\Services\Employer\EmployerServiceInterface;
 use Illuminate\Http\Request;
 
 class EmployerController extends Controller
 {
     private EmployerServiceInterface $employerServiceInterface;
+    private EmployerRepositoryInterface $employerRepositoryInterface;
 
-    public function __construct(EmployerServiceInterface $employerServiceInterface)
+    public function __construct(EmployerServiceInterface $employerServiceInterface, EmployerRepositoryInterface $employerRepositoryInterface)
     {
         $this->employerServiceInterface = $employerServiceInterface;
+        $this->employerRepositoryInterface = $employerRepositoryInterface;
     }
     public function store(StoreEmployerProfile $request)
     {
@@ -29,9 +32,6 @@ class EmployerController extends Controller
         ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $employerId)
     {
         $employer = $this->employerServiceInterface->showEmployerProfile($employerId);
@@ -41,9 +41,6 @@ class EmployerController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateEmployerProfileRequest $request, string $employerId)
     {
         $validated = $request->validated();
@@ -54,12 +51,13 @@ class EmployerController extends Controller
         ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(string $employerId)
     {
-        return ['message' => 'REMOVE employer profile'];
+        $this->employerRepositoryInterface->deleteEmployer($employerId);
+        return response()->json([
+            'success' => true,
+            'message' => 'Employer profile deleted successfully'
+        ]);
     }
 
     public function updateLogo(Request $request, int $employerId)
