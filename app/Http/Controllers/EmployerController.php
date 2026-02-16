@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreEmployerProfile;
+use App\Http\Requests\UpdateEmployerProfileRequest;
 use App\Http\Resources\ShowEmployerProfileResource;
 use App\Services\Employer\EmployerServiceInterface;
 use Illuminate\Http\Request;
@@ -43,9 +44,13 @@ class EmployerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateEmployerProfileRequest $request, string $employerId)
     {
-        return ['message' => 'UPDATE employer profile'];
+        $validated = $request->validated();
+        return response()->json([
+            'success' => true,
+            'message' => 'Employer profile updated successfully'
+        ]);
     }
 
     /**
