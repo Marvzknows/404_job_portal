@@ -74,4 +74,13 @@ class EmployerController extends Controller
             'message' => 'Employer logo updated successfully'
         ], 200);
     }
+
+    public function restore(string $employerId)
+    {
+        $this->employerRepositoryInterface->restoreEmployer($employerId);
+        return response()->json([
+            'success' => true,
+            'message' => 'Employer profile restored successfully'
+        ]);
+    }
 }

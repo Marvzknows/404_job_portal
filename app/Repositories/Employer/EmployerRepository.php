@@ -38,4 +38,9 @@ class EmployerRepository extends BaseRepository implements EmployerRepositoryInt
     {
         return $this->delete($employerId);
     }
+
+    public function restoreEmployer(int $employerId)
+    {
+        return $this->restore($employerId);
+    }
 }

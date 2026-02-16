@@ -16,4 +16,6 @@ interface EmployerRepositoryInterface
     public function updateEmployerProfile(int $employerId, array $data): Employer;
 
     public function deleteEmployer(int $employerId);
+
+    public function restoreEmployer(int $employerId);
 }

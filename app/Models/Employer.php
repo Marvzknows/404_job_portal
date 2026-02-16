@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\JobListing;
 use App\Models\File;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Employer extends Model
 {
+    use SoftDeletes;
     protected $fillable = [
         'user_id',
         'company_name',

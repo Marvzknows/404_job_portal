@@ -36,6 +36,7 @@ Route::middleware(['auth:sanctum', EmployerRoleMiddleware::class])->prefix('empl
     Route::put('/{employerId}', [EmployerController::class, 'update'])->name('employer.update');
     Route::delete('/{employerId}', [EmployerController::class, 'destroy'])->name('employer.destroy');
     Route::post('/{employerId}/logo', [EmployerController::class, 'updateLogo'])->name('employer.updateLogo');
+    Route::post('/{employerId}/restore', [EmployerController::class, 'restore'])->name('employer.restore');
 
     // TO-DO (prefix: jobs)
     // POST   employer/jobs
