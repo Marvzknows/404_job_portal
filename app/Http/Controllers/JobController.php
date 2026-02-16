@@ -3,11 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreJobRequest;
+use App\Services\JobListing\JobListingServiceInterface;
 use Illuminate\Http\Request;
 
 class JobController extends Controller
 {
 
+    private JobListingServiceInterface $jobServiceInterface;
+
+    public function __construct(JobListingServiceInterface $jobServiceInterface)
+    {
+        $this->jobServiceInterface = $jobServiceInterface;
+    }
     public function index()
     {
         //
@@ -16,6 +23,7 @@ class JobController extends Controller
     public function store(StoreJobRequest $request)
     {
         $validated = $request->validated();
+        $this->jobServiceInterface->createJobListing($validated, $request->user());
         return response()->json([
             'success' => true,
             'message' => 'Job created successfully',
