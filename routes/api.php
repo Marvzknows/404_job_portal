@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\EmployerController;
+use App\Http\Controllers\JobController;
 use App\Http\Middleware\EmployerRoleMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -29,7 +30,7 @@ Route::middleware([
         ->name('me');
 });
 
-// Employer routes
+#region Employer routes
 Route::middleware(['auth:sanctum', EmployerRoleMiddleware::class])->prefix('employer')->group(function () {
     Route::post('/create', [EmployerController::class, 'store'])->name('employer.store');
     Route::get('/{id}', [EmployerController::class, 'show'])->name('employer.show');
@@ -38,11 +39,15 @@ Route::middleware(['auth:sanctum', EmployerRoleMiddleware::class])->prefix('empl
     Route::post('/{employerId}/logo', [EmployerController::class, 'updateLogo'])->name('employer.updateLogo');
     Route::post('/{employerId}/restore', [EmployerController::class, 'restore'])->name('employer.restore');
 
-    // TO-DO (prefix: jobs)
-    // POST   employer/jobs
-    // GET    employer/jobs/list (paginated, search by title)
-    // GET    employer/jobs/{job}
-    // PUT    employer/jobs/{job}
-    // DELETE employer/jobs/{job}
-
+    #region Employer job management routes
+    Route::prefix('jobs')->group(function () {
+        Route::post('/', [JobController::class, 'store'])->name('jobs.store');
+        Route::get('/list', [JobController::class, 'index'])->name('jobs.index');
+        Route::get('/{job}', [JobController::class, 'show'])->name('jobs.show');
+        Route::put('/{job}', [JobController::class, 'update'])->name('jobs.update');
+        Route::delete('/{job}', [JobController::class, 'destroy'])->name('jobs.destroy');
+        Route::post('/{job}/restore', [JobController::class, 'restore'])->name('jobs.restore');
+    });
+    #endregion
 });
+#endregion
