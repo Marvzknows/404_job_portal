@@ -2,6 +2,7 @@
 
 namespace App\Services\Employer;
 
+use App\Models\Employer;
 use App\Models\User;
 use App\Repositories\Employer\EmployerRepositoryInterface;
 use App\Repositories\File\FileRepositoryInterface;
@@ -78,5 +79,10 @@ class EmployerService implements EmployerServiceInterface
                 'logo' => ['Failed to update employer logo: ' . $e->getMessage()]
             ]);
         }
+    }
+
+    public function updateEmployerProfile(int $employerId, array $data): Employer
+    {
+        return $this->employerRepositoryInterface->updateEmployerProfile($employerId, $data);
     }
 }

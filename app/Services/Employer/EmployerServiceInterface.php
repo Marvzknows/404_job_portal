@@ -10,6 +10,7 @@ interface EmployerServiceInterface
 
     public function createEmployerProfile(array $data, User $user, $logo = null);
     public function updateEmployerLogo(int $employerId, UploadedFile $logo);
-
     public function showEmployerProfile(int $employerId);
+
+    public function updateEmployerProfile(int $employerId, array $data);
 }

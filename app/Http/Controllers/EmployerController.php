@@ -47,6 +47,7 @@ class EmployerController extends Controller
     public function update(UpdateEmployerProfileRequest $request, string $employerId)
     {
         $validated = $request->validated();
+        $this->employerServiceInterface->updateEmployerProfile($employerId, $validated);
         return response()->json([
             'success' => true,
             'message' => 'Employer profile updated successfully'
