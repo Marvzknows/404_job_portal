@@ -12,4 +12,6 @@ interface EmployerRepositoryInterface
     public function userHasProfile(int $userId);
 
     public function create(array $data);
+
+    public function updateEmployerProfile(int $employerId, array $data): Employer;
 }

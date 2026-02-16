@@ -56,8 +56,18 @@ class EmployerController extends Controller
         return ['message' => 'REMOVE employer profile'];
     }
 
-    public function updateLogo($employerId)
+    public function updateLogo(Request $request, int $employerId)
     {
-        return ['message' => 'Update employer logo' . ' ' . $employerId];
+        $request->validate([
+            'logo' => 'required|image|mimes:png,jpg,jpeg,webp|max:2048',
+        ]);
+
+        $logo = $request->file('logo');
+        $this->employerServiceInterface->updateEmployerLogo($employerId, $logo);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Employer logo updated successfully'
+        ], 200);
     }
 }

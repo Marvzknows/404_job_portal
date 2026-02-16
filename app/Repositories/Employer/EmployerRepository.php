@@ -21,4 +21,11 @@ class EmployerRepository implements EmployerRepositoryInterface
     {
         return Employer::create($data);
     }
+
+    public function updateEmployerProfile(int $employerId, array $data): Employer
+    {
+        $employer = Employer::findOrFail($employerId);
+        $employer->update($data);
+        return $employer->fresh();
+    }
 }

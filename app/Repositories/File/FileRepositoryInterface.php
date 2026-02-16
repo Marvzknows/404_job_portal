@@ -7,7 +7,7 @@ use Illuminate\Http\UploadedFile;
 
 interface FileRepositoryInterface
 {
-    public function store(UploadedFile $file, int $uploadedBy, string $directory = 'public');
+    public function store(UploadedFile $file, int $uploadedBy, string $directory = 'public'): File;
 
     public function findById(int $id);
 

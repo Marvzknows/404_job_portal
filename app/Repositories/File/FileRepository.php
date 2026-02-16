@@ -13,7 +13,7 @@ class FileRepository implements FileRepositoryInterface
         UploadedFile $file,
         int $uploadedBy,
         string $directory = 'fileUploads'
-    ) {
+    ): File {
         // Store in public disc
         $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
         $path = $file->storeAs($directory, $fileName, 'public');
@@ -26,6 +26,7 @@ class FileRepository implements FileRepositoryInterface
             'url' => asset("storage/{$path}")
         ]);
     }
+
 
     public function findById(int $id)
     {

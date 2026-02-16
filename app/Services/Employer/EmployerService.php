@@ -5,6 +5,7 @@ namespace App\Services\Employer;
 use App\Models\User;
 use App\Repositories\Employer\EmployerRepositoryInterface;
 use App\Repositories\File\FileRepositoryInterface;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -23,12 +24,6 @@ class EmployerService implements EmployerServiceInterface
     public function createEmployerProfile(array $data, User $user, $logo = null)
     {
         return DB::transaction(function () use ($data, $user, $logo) {
-
-            if ($user->role !== 'employer') {
-                throw ValidationException::withMessages([
-                    'role' => ['User must be an employer.']
-                ]);
-            }
 
             if ($this->employerRepositoryInterface->userHasProfile($user->id)) {
                 throw ValidationException::withMessages([
@@ -60,5 +55,28 @@ class EmployerService implements EmployerServiceInterface
     public function showEmployerProfile(int $employerId)
     {
         return $this->employerRepositoryInterface->findById($employerId);
+    }
+
+    public function updateEmployerLogo(int $employerId, UploadedFile $logo)
+    {
+        try {
+            return DB::transaction(function () use ($employerId, $logo) {
+
+                $employer = $this->showEmployerProfile($employerId);
+                if (!$employer) {
+                    throw ValidationException::withMessages([
+                        'employer' => ['User employer profile not found.']
+                    ]);
+                }
+
+                // create the new file and store in db and disc public localstorage
+                $newLogo = $this->fileRepositoryInterface->store($logo, $employer->user_id, 'fileUploads');
+                return $this->employerRepositoryInterface->updateEmployerProfile($employer->id, ['logo_id' => $newLogo->id]);
+            });
+        } catch (\Throwable $e) {
+            throw ValidationException::withMessages([
+                'logo' => ['Failed to update employer logo: ' . $e->getMessage()]
+            ]);
+        }
     }
 }
