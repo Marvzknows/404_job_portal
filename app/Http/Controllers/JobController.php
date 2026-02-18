@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreJobRequest;
+use App\Http\Resources\ShowJobListingListResource;
 use App\Services\JobListing\JobListingServiceInterface;
 use Illuminate\Http\Request;
 
@@ -21,7 +22,7 @@ class JobController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Job listings retrieved successfully',
-            'data' => $data
+            'data'    => ShowJobListingListResource::collection($data)->response()->getData()
         ]);
     }
 
