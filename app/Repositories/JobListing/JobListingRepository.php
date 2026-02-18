@@ -21,6 +21,7 @@ class JobListingRepository implements JobListingRepositoryInterface
         $job_type = $filters['job_type'] ?? null;
 
         return JobListing::query()
+            ->with('employer', 'employer.logo', 'employer.user')
             ->when($employerId, function ($q) use ($employerId) {
                 $q->where('employer_id', $employerId);
             })->when($search, function ($q) use ($search) {
