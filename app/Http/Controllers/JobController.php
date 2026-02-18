@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreJobRequest;
 use App\Http\Resources\ShowJobListingListResource;
+use App\Repositories\JobListing\JobListingRepositoryInterface;
 use App\Services\JobListing\JobListingServiceInterface;
 use Illuminate\Http\Request;
 
@@ -11,10 +12,14 @@ class JobController extends Controller
 {
 
     private JobListingServiceInterface $jobServiceInterface;
+    private JobListingRepositoryInterface $JobListingRepositoryInterface;
 
-    public function __construct(JobListingServiceInterface $jobServiceInterface)
-    {
+    public function __construct(
+        JobListingServiceInterface $jobServiceInterface,
+        JobListingRepositoryInterface $JobListingRepositoryInterface
+    ) {
         $this->jobServiceInterface = $jobServiceInterface;
+        $this->JobListingRepositoryInterface = $JobListingRepositoryInterface;
     }
     public function index(Request $request)
     {
@@ -39,7 +44,11 @@ class JobController extends Controller
 
     public function show(string $id)
     {
-        //
+        $data = $this->JobListingRepositoryInterface->show($id);
+        return response()->json([
+            'success' => true,
+            'data' => $data
+        ]);
     }
 
     public function update(Request $request, string $id)

@@ -34,4 +34,9 @@ class JobListingRepository implements JobListingRepositoryInterface
             ->orderBy($sortBy, $sortDirection)
             ->paginate($per_page);
     }
+
+    public function show(int $jobListingId): JobListing
+    {
+        return JobListing::with('employer', 'employer.logo', 'employer.user')->findOrFail($jobListingId);
+    }
 }
