@@ -15,9 +15,14 @@ class JobController extends Controller
     {
         $this->jobServiceInterface = $jobServiceInterface;
     }
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $data = $this->jobServiceInterface->jobListingList($request->query());
+        return response()->json([
+            'success' => true,
+            'message' => 'Job listings retrieved successfully',
+            'data' => $data
+        ]);
     }
 
     public function store(StoreJobRequest $request)
