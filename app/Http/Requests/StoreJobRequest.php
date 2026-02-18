@@ -24,7 +24,6 @@ class StoreJobRequest extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'description' => 'nullable|json',
-            'status' => 'required|in:open,closed',
             'salary_min' => 'required|numeric|min:0',
             'salary_max' => 'required|numeric|min:0|gte:salary_min',
             'work_setup' => 'required|in:remote,on_site,hybrid',
@@ -36,7 +35,6 @@ class StoreJobRequest extends FormRequest
     {
         return [
             'description.json' => 'Description must be a valid JSON string.',
-            'status.in' => 'Status must be either open or closed.',
             'salary_min.numeric' => 'Minimum salary must be a number.',
             'salary_min.min' => 'Minimum salary must be at least 0.',
             'salary_max.numeric' => 'Maximum salary must be a number.',
