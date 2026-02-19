@@ -17,4 +17,6 @@ interface JobListingRepositoryInterface
     public function deleteJobListing(int $jobId);
 
     public function restoreJobListing(int $jobId);
+
+    public function updateJobStatus(string $status, int $jobId);
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreJobRequest;
 use App\Http\Requests\UpdateJobRequest;
+use App\Http\Requests\UpdateJobStatusRequest;
 use App\Http\Resources\ShowJobListingListResource;
 use App\Repositories\JobListing\JobListingRepositoryInterface;
 use App\Services\JobListing\JobListingServiceInterface;
@@ -80,15 +81,13 @@ class JobController extends Controller
         ]);
     }
 
-    public function status(Request $request, string $id)
+    public function status(UpdateJobStatusRequest $request, int $id)
     {
+        $validated = $request->validated();
+        $this->jobServiceInterface->updateJobStatus($validated['status'], $id);
         return response()->json([
             'success' => true,
             'message' => 'Job status updated successfully',
-            'data' => [
-                'id' => $id,
-                'status' => $request->input('status')
-            ]
         ]);
     }
 }

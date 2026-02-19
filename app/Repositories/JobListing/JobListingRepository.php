@@ -59,4 +59,9 @@ class JobListingRepository extends BaseRepository implements JobListingRepositor
     {
         return $this->restore($jobId);
     }
+
+    public function updateJobStatus(string $status, int $jobId)
+    {
+        return JobListing::where('id', $jobId)->update(['status' => $status]);
+    }
 }

@@ -65,4 +65,10 @@ class JobListingService implements JobListingServiceInterface
         $this->authorizeEmployerJob($jobId);
         return $this->jobListingRepository->deleteJobListing($jobId);
     }
+
+    public function updateJobStatus(string $status, int $jobId)
+    {
+        $this->authorizeEmployerJob($jobId);
+        return $this->jobListingRepository->updateJobStatus($status, $jobId);
+    }
 }
