@@ -13,4 +13,6 @@ interface JobListingRepositoryInterface
     public function show(int $jobListingId): JobListing;
 
     public function update(array $data, int $jobId);
+
+    public function deleteJobListing(int $jobId);
 }

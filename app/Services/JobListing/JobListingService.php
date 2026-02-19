@@ -59,4 +59,10 @@ class JobListingService implements JobListingServiceInterface
             ]);
         }
     }
+
+    public function deleteJob(int $jobId)
+    {
+        $this->authorizeEmployerJob($jobId);
+        return $this->jobListingRepository->deleteJobListing($jobId);
+    }
 }

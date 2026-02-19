@@ -11,4 +11,6 @@ interface JobListingServiceInterface
     public function jobListingList(array $filters = []);
 
     public function updateJobListing(array $data, int $jobId);
+
+    public function deleteJob(int $jobId);
 }

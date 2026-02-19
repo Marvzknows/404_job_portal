@@ -55,16 +55,20 @@ class JobController extends Controller
     public function update(UpdateJobRequest $request, int $id)
     {
         $validated = $request->validated();
-        return $this->jobServiceInterface->updateJobListing($validated, $id);
+        $this->jobServiceInterface->updateJobListing($validated, $id);
         return response()->json([
             'success' => true,
             'message' => 'Job updated successfully',
         ]);
     }
 
-    public function destroy(string $id)
+    public function destroy(int $id)
     {
-        //
+        $this->jobServiceInterface->deleteJob($id);
+        return response()->json([
+            'success' => true,
+            'message' => 'Job listing deleted successfully',
+        ]);
     }
 
     public function restore(string $id)

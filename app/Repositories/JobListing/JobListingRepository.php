@@ -3,9 +3,14 @@
 namespace App\Repositories\JobListing;
 
 use App\Models\JobListing;
+use App\Repositories\Base\BaseRepository;
 
-class JobListingRepository implements JobListingRepositoryInterface
+class JobListingRepository extends BaseRepository implements JobListingRepositoryInterface
 {
+    public function __construct(JobListing $model)
+    {
+        return parent::__construct($model);
+    }
     public function create(array $data)
     {
         return JobListing::create($data);
@@ -43,5 +48,10 @@ class JobListingRepository implements JobListingRepositoryInterface
     public function show(int $jobListingId): JobListing
     {
         return JobListing::with('employer', 'employer.logo', 'employer.user')->findOrFail($jobListingId);
+    }
+
+    public function deleteJobListing(int $jobId)
+    {
+        return $this->delete($jobId);
     }
 }
