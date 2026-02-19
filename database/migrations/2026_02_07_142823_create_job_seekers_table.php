@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('bio')->nullable();
             $table->string('portfolio')->nullable();
             $table->string('current_job_title')->nullable();
-            $table->string('resume');
+            $table->unsignedBigInteger('resume_id')->nullable();
             $table->string('phone');
             $table->string('location')->nullable();
             $table->timestamps();

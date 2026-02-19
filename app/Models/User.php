@@ -7,6 +7,9 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Employer;
+use App\Models\JobSeeker;
+use App\Models\File;
 
 class User extends Authenticatable
 {
@@ -24,6 +27,7 @@ class User extends Authenticatable
         'role',
         'email',
         'password',
+        'avatar_id',
     ];
 
     /**
@@ -49,6 +53,10 @@ class User extends Authenticatable
         ];
     }
 
+    public function getFullNameAttribute()
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
     public function employer()
     {
         return $this->hasOne(Employer::class);
@@ -57,5 +65,15 @@ class User extends Authenticatable
     public function jobSeeker()
     {
         return $this->hasOne(JobSeeker::class);
+    }
+
+    public function uploadedFiles()
+    {
+        return $this->hasMany(File::class, 'uploaded_by');
+    }
+
+    public function avatar()
+    {
+        return $this->belongsTo(File::class, 'avatar_id');
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Resources\MeResource;
 use App\Services\Auth\AuthServiceInterface;
 use Illuminate\Http\Request;
 
@@ -15,6 +16,15 @@ class AuthController extends Controller
     public function __construct(AuthServiceInterface $authServiceInterface)
     {
         $this->authServiceInterface = $authServiceInterface;
+    }
+
+    public function me(Request $request)
+    {
+        $data = $this->authServiceInterface->me($request->user());
+        return response()->json([
+            'success' => true,
+            'data' => new MeResource($data),
+        ]);
     }
     public function register(RegisterRequest $request)
     {

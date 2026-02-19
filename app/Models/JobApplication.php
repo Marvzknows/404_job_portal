@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\JobListing;
+use App\Models\JobSeeker;
+use App\Models\File;
 
 class JobApplication extends Model
 {
@@ -11,7 +14,7 @@ class JobApplication extends Model
         'job_listing_id',
         'status',
         'cover_letter',
-        'resume',
+        'resume_id',
     ];
 
     public function jobSeeker()
@@ -22,5 +25,10 @@ class JobApplication extends Model
     public function jobListing()
     {
         return $this->belongsTo(JobListing::class);
+    }
+
+    public function resume()
+    {
+        return $this->belongsTo(File::class, 'resume_id');
     }
 }

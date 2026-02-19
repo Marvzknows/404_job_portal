@@ -3,9 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\JobApplication;
+use App\Models\Employer;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class JobListing extends Model
 {
+    use SoftDeletes;
     protected $fillable = [
         'employer_id',
         'title',
