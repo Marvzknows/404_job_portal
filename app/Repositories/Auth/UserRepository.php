@@ -22,4 +22,11 @@ class UserRepository implements UserRepositoryInterface
     {
         return User::with(['employer.logo.uploadedBy', 'jobSeeker',])->find($userId);
     }
+
+    public function updateUser(array $data, int $userId)
+    {
+        $user = User::findOrFail($userId);
+        $user->update($data);
+        return $user->fresh();
+    }
 }

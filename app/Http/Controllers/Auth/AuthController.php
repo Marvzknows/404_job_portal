@@ -54,4 +54,19 @@ class AuthController extends Controller
         $this->authServiceInterface->logout($request->user());
         return response()->json(['message' => 'User logged out successfully']);
     }
+
+    public function updateAvatar(Request $request)
+    {
+        $request->validate([
+            'avatar' => 'required|image|mimes:png,jpg,jpeg,webp|max:2048',
+        ]);
+
+        $avatar = $request->file('avatar');
+        $this->authServiceInterface->updateAvatar($avatar, $request->user());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User avatar updated successfully'
+        ], 200);
+    }
 }

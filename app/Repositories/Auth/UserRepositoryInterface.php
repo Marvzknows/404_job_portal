@@ -9,4 +9,6 @@ interface UserRepositoryInterface
     public function register(array $data);
 
     public function getAuthenticatedUserWithProfile(int $userId);
+
+    public function updateUser(array $data, int $userId);
 }
