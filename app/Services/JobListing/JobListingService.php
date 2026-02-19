@@ -4,6 +4,7 @@ namespace App\Services\JobListing;
 
 use App\Repositories\JobListing\JobListingRepositoryInterface;
 use App\Models\User;
+use Illuminate\Validation\ValidationException;
 
 class JobListingService implements JobListingServiceInterface
 {
@@ -19,6 +20,12 @@ class JobListingService implements JobListingServiceInterface
         // Attach user info if needed
         $data['employer_id'] = $user->employer->id;
         return $this->jobListingRepository->create($data);
+    }
+
+    public function updateJobListing(array $data, int $jobId)
+    {
+        $this->authorizeEmployerJob($jobId);
+        return $this->jobListingRepository->update($data, $jobId);
     }
 
     public function jobListingList(array $filters = [])
@@ -37,5 +44,19 @@ class JobListingService implements JobListingServiceInterface
         }
 
         return $this->jobListingRepository->getPaginated($filters, $employerId ?? null);
+    }
+
+    private function authorizeEmployerJob(int $jobId)
+    {
+        $user = request()->user();
+        $employerId = $user->employer->id;
+
+        $job = $this->jobListingRepository->show($jobId);
+
+        if ($job->employer_id !== $employerId) {
+            throw ValidationException::withMessages([
+                'authorization' => ['You are not authorized to update this job listing.']
+            ]);
+        }
     }
 }

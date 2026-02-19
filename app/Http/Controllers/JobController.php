@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreJobRequest;
+use App\Http\Requests\UpdateJobRequest;
 use App\Http\Resources\ShowJobListingListResource;
 use App\Repositories\JobListing\JobListingRepositoryInterface;
 use App\Services\JobListing\JobListingServiceInterface;
@@ -51,9 +52,14 @@ class JobController extends Controller
         ]);
     }
 
-    public function update(Request $request, string $id)
+    public function update(UpdateJobRequest $request, int $id)
     {
-        //
+        $validated = $request->validated();
+        return $this->jobServiceInterface->updateJobListing($validated, $id);
+        return response()->json([
+            'success' => true,
+            'message' => 'Job updated successfully',
+        ]);
     }
 
     public function destroy(string $id)

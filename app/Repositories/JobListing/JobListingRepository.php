@@ -11,6 +11,11 @@ class JobListingRepository implements JobListingRepositoryInterface
         return JobListing::create($data);
     }
 
+    public function update(array $data, int $jobId)
+    {
+        return JobListing::where('id', $jobId)->update($data);
+    }
+
     public function getPaginated(array $filters = [], int|null $employerId = null)
     {
         $search = $filters['search'] ?? null;

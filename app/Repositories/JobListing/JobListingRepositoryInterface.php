@@ -11,4 +11,6 @@ interface JobListingRepositoryInterface
     public function getPaginated(array $filters = [], int|null $employerId = null);
 
     public function show(int $jobListingId): JobListing;
+
+    public function update(array $data, int $jobId);
 }
