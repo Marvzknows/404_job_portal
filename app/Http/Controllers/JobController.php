@@ -71,14 +71,12 @@ class JobController extends Controller
         ]);
     }
 
-    public function restore(string $id)
+    public function restore(int $id)
     {
+        $this->JobListingRepositoryInterface->restoreJobListing($id);
         return response()->json([
             'success' => true,
             'message' => 'Job restored successfully',
-            'data' => [
-                'id' => $id
-            ]
         ]);
     }
 

@@ -15,4 +15,6 @@ interface JobListingRepositoryInterface
     public function update(array $data, int $jobId);
 
     public function deleteJobListing(int $jobId);
+
+    public function restoreJobListing(int $jobId);
 }

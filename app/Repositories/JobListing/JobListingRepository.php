@@ -54,4 +54,9 @@ class JobListingRepository extends BaseRepository implements JobListingRepositor
     {
         return $this->delete($jobId);
     }
+
+    public function restoreJobListing(int $jobId)
+    {
+        return $this->restore($jobId);
+    }
 }
