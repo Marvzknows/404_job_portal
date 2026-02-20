@@ -43,6 +43,12 @@ class JobSeekerController extends Controller
 
     public function updateResume(Request $request, int $jobSeekerId)
     {
+        $request->validate([
+            'resume' => 'required|file|mimes:pdf|max:2048',
+        ]);
+
+        $resume = $request->file('resume');
+        $this->jobSeekerServiceInterface->updateResume($resume, $jobSeekerId);
         return response()->json([
             'success' => true,
             'message' => 'Job seeker resume updated successfully'

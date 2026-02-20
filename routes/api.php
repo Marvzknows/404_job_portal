@@ -65,10 +65,8 @@ Route::middleware(['auth:sanctum', 'role:job_seeker'])
         // Job Seeker Routes
         Route::post('/', [JobSeekerController::class, 'store'])->name('job_seeker.store');
         Route::get('/{jobSeekerId}', [JobSeekerController::class, 'show'])->name('job_seeker.show');
-        // PUT: /{id} (update jobseeker profile)
         Route::put('/{jobSeekerId}', [JobSeekerController::class, 'update'])->name('job_seeker.update');
-        // POST: /{id}/resume (update job seeker resume)
-        Route::put('/{jobSeekerId}', [JobSeekerController::class, 'update'])->name('job_seeker.update');
+        Route::post('/{jobSeekerId}/resume', [JobSeekerController::class, 'updateResume'])->name('job_seeker.updateResume');
         // DELETE: '/{id}/delete (delete job seeker profile)
         Route::delete('/{jobSeekerId}', [JobSeekerController::class, 'destroy'])->name('job_seeker.destroy');
         // RESTORE: '/{id}/restore' (restore job seeker profile)

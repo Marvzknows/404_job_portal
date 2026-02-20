@@ -10,4 +10,6 @@ interface JobSeekerServiceInterface
     public function createProfile(array $data, UploadedFile|null $resume);
 
     public function updateProfile(array $data, int $jobSeekerId);
+
+    public function updateResume(UploadedFile $resume, int $jobSeekerId);
 }

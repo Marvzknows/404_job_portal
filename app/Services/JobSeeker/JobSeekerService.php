@@ -56,4 +56,27 @@ class JobSeekerService implements JobSeekerServiceInterface
     {
         return $this->JobSeekerRepository->updateJobSeekerProfile($data, $jobSeekerId);
     }
+
+    public function updateResume(UploadedFile $resume, int $jobSeekerId)
+    {
+        return DB::transaction(function () use ($resume, $jobSeekerId) {
+            $user = request()->user();
+            if (!$this->JobSeekerRepository->show($user->id)) {
+                throw ValidationException::withMessages([
+                    'job_seeker' => ['User job seeker profile not found.']
+                ]);
+            }
+
+            $jobSeeker = $this->JobSeekerRepository->showJobSeekerProfile($jobSeekerId);
+
+            if (!$jobSeeker || $jobSeeker->id !== $jobSeekerId) {
+                throw ValidationException::withMessages([
+                    'job_seeker' => ['Unauthorized profile access.']
+                ]);
+            }
+
+            $newResume = $this->fileRepositoryInterface->store($resume, $user->id, 'resume');
+            return $this->JobSeekerRepository->updateJobSeekerProfile(['resume_id' => $newResume->id], $jobSeekerId);
+        });
+    }
 }
