@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreJobSeekerProfileRequest;
+use App\Http\Resources\JobSeekerProfileResource;
 use App\Repositories\JobSeeker\JobSeekerRepositoryInterface;
 use App\Services\JobSeeker\JobSeekerServiceInterface;
 use Illuminate\Http\Request;
@@ -35,7 +36,7 @@ class JobSeekerController extends Controller
         $jobSeekerProfile = $this->jobseekerRepository->showJobSeekerProfile($id);
         return response()->json([
             'success' => true,
-            'data' => $jobSeekerProfile,
+            'data' => new JobSeekerProfileResource($jobSeekerProfile),
         ]);
     }
 
