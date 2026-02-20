@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\EmployerController;
 use App\Http\Controllers\JobController;
+use App\Http\Controllers\JobSeekerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -63,10 +64,15 @@ Route::middleware(['auth:sanctum', 'role:job_seeker'])
 
         // Job Seeker Routes
         // POST: '/' (create job seeker profile)
+        Route::post('/', [JobSeekerController::class, 'store'])->name('job_seeker.store');
         // GET: /{id} (view job seeker profile)
+        Route::post('/{jobSeekerId}', [JobSeekerController::class, 'show'])->name('job_seeker.show');
         // PUT: /{id} (update jobseeker profile)
+        Route::put('/{jobSeekerId}', [JobSeekerController::class, 'update'])->name('job_seeker.update');
         // DELETE: '/{id}/delete (delete job seeker profile)
+        Route::delete('/{jobSeekerId}', [JobSeekerController::class, 'destroy'])->name('job_seeker.destroy');
         // RESTORE: '/{id}/restore' (restore job seeker profile)
+        Route::delete('/{jobSeekerId}/restore', [JobSeekerController::class, 'restore'])->name('job_seeker.restore');
     });
 #endregion
 
