@@ -9,4 +9,6 @@ interface JobSeekerRepositoryInterface
     public function createProfile(array $data);
 
     public function showJobSeekerProfile(int $jobSeekerId);
+
+    public function updateJobSeekerProfile(array $data, int $jobSeekerId);
 }

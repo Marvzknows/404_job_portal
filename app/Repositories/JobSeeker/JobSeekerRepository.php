@@ -26,4 +26,9 @@ class JobSeekerRepository extends BaseRepository implements JobSeekerRepositoryI
     {
         return JobSeeker::with(['jobApplications', 'user.avatar', 'resume.uploadedBy'])->findOrFail($jobSeekerId);
     }
+
+    public function updateJobSeekerProfile(array $data, int $jobSeekerId)
+    {
+        return JobSeeker::findOrFail($jobSeekerId)->update($data);
+    }
 }

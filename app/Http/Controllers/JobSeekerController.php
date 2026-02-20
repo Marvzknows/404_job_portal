@@ -52,6 +52,7 @@ class JobSeekerController extends Controller
     public function update(UpdateJobSeekerProfileResource $request, int $id)
     {
         $validated = $request->validated();
+        $this->jobSeekerServiceInterface->updateProfile($validated, $id);
         return response()->json([
             'success' => true,
             'message' => 'Job seeker profile updated successfully',

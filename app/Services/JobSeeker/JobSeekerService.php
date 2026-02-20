@@ -5,6 +5,7 @@ namespace App\Services\JobSeeker;
 use App\Repositories\File\FileRepositoryInterface;
 use App\Repositories\JobSeeker\JobSeekerRepositoryInterface;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class JobSeekerService implements JobSeekerServiceInterface
@@ -23,28 +24,36 @@ class JobSeekerService implements JobSeekerServiceInterface
 
     public function createProfile(array $data, UploadedFile|null $resume)
     {
-        $user = request()->user();
-        if ($this->JobSeekerRepository->show($user->id)) {
-            throw ValidationException::withMessages([
-                'job_seeker' => ['User already has an job seeker profile.']
-            ]);
-        }
+        return DB::transaction(function () use ($data, $resume) {
 
-        $resumeFile = null;
-        if ($resume) {
-            $resumeFile = $this->fileRepositoryInterface->store($resume, $user->id, 'resume');
-        }
+            $user = request()->user();
+            if ($this->JobSeekerRepository->show($user->id)) {
+                throw ValidationException::withMessages([
+                    'job_seeker' => ['User already has an job seeker profile.']
+                ]);
+            }
 
-        $formattedData = [
-            'user_id' => $user->id,
-            'bio' => $data['bio'],
-            'portfolio' => $data['portfolio'],
-            'current_job_title' => $data['current_job_title'],
-            'resume_id' => $resumeFile?->id,
-            'phone' => $data['phone'],
-            'location' => $data['location'],
-        ];
+            $resumeFile = null;
+            if ($resume) {
+                $resumeFile = $this->fileRepositoryInterface->store($resume, $user->id, 'resume');
+            }
 
-        return $this->JobSeekerRepository->createProfile($formattedData);
+            $formattedData = [
+                'user_id' => $user->id,
+                'bio' => $data['bio'],
+                'portfolio' => $data['portfolio'],
+                'current_job_title' => $data['current_job_title'],
+                'resume_id' => $resumeFile?->id,
+                'phone' => $data['phone'],
+                'location' => $data['location'],
+            ];
+
+            return $this->JobSeekerRepository->createProfile($formattedData);
+        });
+    }
+
+    public function updateProfile(array $data, int $jobSeekerId)
+    {
+        return $this->JobSeekerRepository->updateJobSeekerProfile($data, $jobSeekerId);
     }
 }
