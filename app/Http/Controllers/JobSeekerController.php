@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreJobSeekerProfileRequest;
+use App\Http\Requests\UpdateJobSeekerProfileResource;
 use App\Http\Resources\JobSeekerProfileResource;
 use App\Repositories\JobSeeker\JobSeekerRepositoryInterface;
 use App\Services\JobSeeker\JobSeekerServiceInterface;
@@ -48,8 +49,9 @@ class JobSeekerController extends Controller
         ]);
     }
 
-    public function update(Request $request, string $id)
+    public function update(UpdateJobSeekerProfileResource $request, int $id)
     {
+        $validated = $request->validated();
         return response()->json([
             'success' => true,
             'message' => 'Job seeker profile updated successfully',
