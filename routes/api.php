@@ -54,11 +54,33 @@ Route::middleware(['auth:sanctum', 'role:employer'])
         });
         #endregion
     });
+#endregion
 
+#region Job Seeker Routes
 Route::middleware(['auth:sanctum', 'role:job_seeker'])
     ->prefix('job_seeker')
     ->group(function () {
 
-        
+        // Job Seeker Routes
+        // POST: '/' (create job seeker profile)
+        // GET: /{id} (view job seeker profile)
+        // PUT: /{id} (update jobseeker profile)
+        // DELETE: '/{id}/delete (delete job seeker profile)
+        // RESTORE: '/{id}/restore' (restore job seeker profile)
     });
+#endregion
+
+#region Job Application Routes (EMPLOYER SIDE)
+    // 'employer/applications'
+    // GET: '/' (view paginated application list)
+    // PUT: '{applicationId}/status' (update application status)
+#endregion
+
+#region Job Application Routes (JOB SEEKER SIDE)
+    // 'job_seeker/applications'
+    // POST: '/' (create application)
+    // GET: '/' (view paginated application list)
+    // GET: '/{applicationId} (view applicaton details)
+    // PUT: '{applicationId}/' (update application details)
+    // PUT: '{applicationId}/status' (update application status)
 #endregion
