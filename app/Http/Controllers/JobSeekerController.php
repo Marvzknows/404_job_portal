@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreJobSeekerProfileRequest;
+use App\Repositories\JobSeeker\JobSeekerRepositoryInterface;
 use App\Services\JobSeeker\JobSeekerServiceInterface;
 use Illuminate\Http\Request;
 
@@ -10,9 +11,13 @@ class JobSeekerController extends Controller
 {
 
     private JobSeekerServiceInterface $jobSeekerServiceInterface;
-    public function __construct(JobSeekerServiceInterface $jobSeekerServiceInterface)
-    {
+    private JobSeekerRepositoryInterface $jobseekerRepository;
+    public function __construct(
+        JobSeekerServiceInterface $jobSeekerServiceInterface,
+        JobSeekerRepositoryInterface $jobseekerRepository
+    ) {
         $this->jobSeekerServiceInterface = $jobSeekerServiceInterface;
+        $this->jobseekerRepository = $jobseekerRepository;
     }
     public function store(StoreJobSeekerProfileRequest $request)
     {
@@ -25,11 +30,12 @@ class JobSeekerController extends Controller
         ]);
     }
 
-    public function show(string $id)
+    public function show(int $id)
     {
+        $jobSeekerProfile = $this->jobseekerRepository->showJobSeekerProfile($id);
         return response()->json([
             'success' => true,
-            'data' => 'job seeker profile data',
+            'data' => $jobSeekerProfile,
         ]);
     }
 

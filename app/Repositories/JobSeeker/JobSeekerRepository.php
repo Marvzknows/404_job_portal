@@ -21,4 +21,9 @@ class JobSeekerRepository extends BaseRepository implements JobSeekerRepositoryI
     {
         return $this->create($data);
     }
+
+    public function showJobSeekerProfile(int $jobSeekerId)
+    {
+        return JobSeeker::with(['jobApplications', 'user', 'resume.uploadedBy'])->findOrFail($jobSeekerId);
+    }
 }
