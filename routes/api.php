@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\EmployerController;
+use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\JobSeekerController;
 use Illuminate\Http\Request;
@@ -70,21 +71,33 @@ Route::middleware(['auth:sanctum', 'role:job_seeker'])
         // DELETE: '/{id}/delete (delete job seeker profile)
         Route::delete('/{jobSeekerId}', [JobSeekerController::class, 'destroy'])->name('job_seeker.destroy');
         // RESTORE: '/{id}/restore' (restore job seeker profile)
-        Route::delete('/{jobSeekerId}/restore', [JobSeekerController::class, 'restore'])->name('job_seeker.restore');
+        Route::post('/{jobSeekerId}/restore', [JobSeekerController::class, 'restore'])->name('job_seeker.restore');
     });
 #endregion
 
-#region Job Application Routes (EMPLOYER SIDE)
-    // 'employer/applications'
-    // GET: '/' (view paginated application list)
-    // PUT: '{applicationId}/status' (update application status)
-#endregion
+#region Job Application Routes
+// (GENERAL)
 
-#region Job Application Routes (JOB SEEKER SIDE)
-    // 'job_seeker/applications'
-    // POST: '/' (create application)
-    // GET: '/' (view paginated application list)
-    // GET: '/{applicationId} (view applicaton details)
-    // PUT: '{applicationId}/' (update application details)
-    // PUT: '{applicationId}/status' (update application status)
+// GET: '/' (view paginated application list)
+Route::middleware('auth:sanctum')->get('/job-application', [JobApplicationController::class, 'index'])->name('job_application.index');
+// GET: '/{applicationId} (view applicaton details)
+Route::middleware('auth:sanctum')->get('/job-application/{jobApplicationId}', [JobApplicationController::class, 'show'])->name('job_application.show');
+// PUT: '{applicationId}/status' (update application status)
+// Employer - viewed, shortlisted, accepted, rejected
+// Job Seeker - withdrawn
+Route::middleware('auth:sanctum')->put('/job-application/{jobApplicationId}', [JobApplicationController::class, 'updateStatus'])->name('job_application.updateStatus');
+
+// (JOB SEEKER)
+Route::middleware(['auth:sanctum', 'role:job_seeker'])
+    ->prefix('job-application')
+    ->group(function () {
+        // POST: '/' (create application)
+        Route::post('/', [JobApplicationController::class, 'store'])->name('job_application.store');
+        // PUT: '{applicationId}/' (update application details)
+        Route::put('/{jobApplicationId}', [JobApplicationController::class, 'update'])->name('job_application.update');
+        // DELETE: '/{applicationId}' (delete job application)'
+        Route::delete('/{jobApplicationId}', [JobApplicationController::class, 'destroy'])->name('job_application.destroy');
+        // POST: '/{applicationId}/restore' (restore deleted job application)
+        Route::post('/{jobApplicationId}/restore', [JobApplicationController::class, 'restore'])->name('job_application.restore');
+    });
 #endregion
