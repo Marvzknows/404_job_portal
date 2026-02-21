@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreJobApplicationRequest;
+use App\Http\Requests\UpdateJobApplicationRequest;
 use App\Services\JobApplication\JobApplicationServiceInterface;
 use Illuminate\Http\Request;
 
@@ -39,7 +40,7 @@ class JobApplicationController extends Controller
         return 'show';
     }
 
-    public function update(Request $request, string $id)
+    public function update(UpdateJobApplicationRequest $request, int $id)
     {
         return 'update job application';
     }

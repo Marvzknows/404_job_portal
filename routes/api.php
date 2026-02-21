@@ -91,7 +91,6 @@ Route::middleware('auth:sanctum')->put('/job-application/{jobApplicationId}', [J
 Route::middleware(['auth:sanctum', 'role:job_seeker'])
     ->prefix('job-application')
     ->group(function () {
-        // POST: '/' (create application)
         Route::post('/', [JobApplicationController::class, 'store'])->name('job_application.store');
         // PUT: '{applicationId}/' (update application details)
         Route::put('/{jobApplicationId}', [JobApplicationController::class, 'update'])->name('job_application.update');
