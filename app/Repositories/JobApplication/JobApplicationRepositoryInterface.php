@@ -2,8 +2,14 @@
 
 namespace App\Repositories\JobApplication;
 
+use App\Models\JobApplication;
+
 interface JobApplicationRepositoryInterface
 {
     public function createJobApplication(array $data);
     public function findDuplicateApplication(int $jobSeekerId, int $jobListingId): bool;
+
+    public function findById(int $jobApplicationId): JobApplication;
+
+    public function updateJobApplication(int $jobApplicationId, array $data);
 }

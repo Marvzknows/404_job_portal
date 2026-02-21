@@ -2,6 +2,7 @@
 
 namespace App\Services\JobApplication;
 
+use App\Models\JobApplication;
 use App\Repositories\File\FileRepositoryInterface;
 use App\Repositories\JobApplication\JobApplicationRepositoryInterface;
 use Illuminate\Http\UploadedFile;
@@ -40,5 +41,38 @@ class JobApplicationService implements JobApplicationServiceInterface
                 'resume_id' => $resumeFile->id,
             ]);
         });
+    }
+
+    public function updateJobApplication(int $jobApplicationId, array $data, ?UploadedFile $resume)
+    {
+        return DB::transaction(function () use ($jobApplicationId, $data, $resume) {
+
+            $user = request()->user();
+
+            $jobApplication = $this->findJobApplicationById($jobApplicationId);
+
+            if ($jobApplication->job_seeker_id !== $user->jobSeeker->id) {
+                throw ValidationException::withMessages([
+                    'job_application' => ['You are not authorized to update this job application.']
+                ]);
+            }
+
+            $updateData = collect($data)->except('resume')->toArray();
+
+            if ($resume) {
+                $resumeFile = $this->fileRepository->store($resume, $user->id, 'resume');
+                $updateData['resume_id'] = $resumeFile->id;
+            }
+
+            return $this->jobApplicationRepository->updateJobApplication(
+                $jobApplicationId,
+                $updateData
+            );
+        });
+    }
+
+    public function findJobApplicationById(int $jobApplicationId): JobApplication
+    {
+        return $this->jobApplicationRepository->findById($jobApplicationId);
     }
 }

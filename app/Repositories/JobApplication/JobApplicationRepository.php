@@ -24,4 +24,14 @@ class JobApplicationRepository extends BaseRepository implements JobApplicationR
     {
         return $this->create($data);
     }
+
+    public function findById(int $jobApplicationId): JobApplication
+    {
+        return JobApplication::with('jobSeeker', 'jobListing')->findOrFail($jobApplicationId);
+    }
+
+    public function updateJobApplication(int $jobApplicationId, array $data)
+    {
+        return JobApplication::where('id', $jobApplicationId)->update($data);
+    }
 }

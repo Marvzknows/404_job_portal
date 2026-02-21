@@ -40,9 +40,15 @@ class JobApplicationController extends Controller
         return 'show';
     }
 
-    public function update(UpdateJobApplicationRequest $request, int $id)
+    public function update(UpdateJobApplicationRequest $request, int $jobApplicationId)
     {
-        return 'update job application';
+        $validated = $request->validated();
+        $resume = $request->file('resume');
+        $this->jobApplicationService->updateJobApplication($jobApplicationId, $validated, $resume);
+        return response()->json([
+            'success' => true,
+            'message' => 'Job application updated successfully',
+        ]);
     }
 
     public function updateStatus(Request $request, int $jobApplicationId)

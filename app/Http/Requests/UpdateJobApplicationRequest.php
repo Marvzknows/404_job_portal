@@ -22,9 +22,8 @@ class UpdateJobApplicationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'job_listing_id' => 'required|exists:job_listings,id',
             'cover_letter' => 'nullable|string|min:8|max:255',
-            'resume' => 'required|file|mimes:pdf|max:2048',
+            'resume' => 'nullable|file|mimes:pdf|max:2048',
         ];
     }
 }
