@@ -35,33 +35,25 @@ class MeResource extends JsonResource
                 'contact_email' => $employer->contact_email,
                 'contact_phone' => $employer->contact_phone,
                 'location' => $employer->location,
-                'logo' => $employer->logo ? [
-                    'id' => $employer->logo->id,
-                    'file_name' => $employer->logo->file_name,
-                    'file_path' => $employer->logo->file_path,
-                    'url' => $employer->logo->url,
-                    'uploaded_by' => $employer->logo->uploadedBy ? [
-                        'id' => $employer->logo->uploadedBy->id,
-                        'full_name' => $employer->logo->uploadedBy->first_name . ' ' . $employer->logo->uploadedBy->last_name,
-                        'email' => $employer->logo->uploadedBy->email,
-                    ] : null,
-                ] : null,
+                'logo' => new FileResource($employer->logo)
 
             ];
         }
 
         if ($this->role === 'job_seeker' && $this->jobSeeker) {
+            $job_seeker = $this->jobSeeker;
             return [
-                'type' => 'job_seeker',
-                'data' => [
-                    'id' => $this->jobSeeker->id,
-                    'bio' => $this->jobSeeker->bio,
-                    'portfolio' => $this->jobSeeker->portfolio,
-                    'current_job_title' => $this->jobSeeker->current_job_title,
-                    'phone' => $this->jobSeeker->phone,
-                    'location' => $this->jobSeeker->location,
-                    'resume_id' => $this->jobSeeker->resume_id,
-                ],
+                "id" => $job_seeker->id,
+                "user_id" => $job_seeker->user_id,
+                "bio" => $job_seeker->bio,
+                "portfolio" => $job_seeker->portfolio,
+                "current_job_title" => $job_seeker->current_job_title,
+                "resume_id" => $job_seeker->resume_id,
+                "phone" => $job_seeker->phone,
+                "location" => $job_seeker->location,
+                "created_at" => $job_seeker->created_at,
+                "updated_at" => $job_seeker->updated_at,
+                "resume" => new FileResource($job_seeker->resume),
             ];
         }
 

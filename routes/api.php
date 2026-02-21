@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\EmployerController;
 use App\Http\Controllers\JobController;
+use App\Http\Controllers\JobSeekerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -62,11 +63,14 @@ Route::middleware(['auth:sanctum', 'role:job_seeker'])
     ->group(function () {
 
         // Job Seeker Routes
-        // POST: '/' (create job seeker profile)
-        // GET: /{id} (view job seeker profile)
-        // PUT: /{id} (update jobseeker profile)
+        Route::post('/', [JobSeekerController::class, 'store'])->name('job_seeker.store');
+        Route::get('/{jobSeekerId}', [JobSeekerController::class, 'show'])->name('job_seeker.show');
+        Route::put('/{jobSeekerId}', [JobSeekerController::class, 'update'])->name('job_seeker.update');
+        Route::post('/{jobSeekerId}/resume', [JobSeekerController::class, 'updateResume'])->name('job_seeker.updateResume');
         // DELETE: '/{id}/delete (delete job seeker profile)
+        Route::delete('/{jobSeekerId}', [JobSeekerController::class, 'destroy'])->name('job_seeker.destroy');
         // RESTORE: '/{id}/restore' (restore job seeker profile)
+        Route::delete('/{jobSeekerId}/restore', [JobSeekerController::class, 'restore'])->name('job_seeker.restore');
     });
 #endregion
 
