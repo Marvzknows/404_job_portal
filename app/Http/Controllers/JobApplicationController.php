@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreJobApplicationRequest;
 use Illuminate\Http\Request;
 
 class JobApplicationController extends Controller
@@ -12,8 +13,11 @@ class JobApplicationController extends Controller
         return 'job application paginated list';
     }
 
-    public function store(Request $request)
+    public function store(StoreJobApplicationRequest $request)
     {
+        $validated = $request->validated();
+        $resume = $request->file('resume');
+
         return response()->json([
             'success' => true,
             'message' => 'Job application created successfully',
