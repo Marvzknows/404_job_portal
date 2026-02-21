@@ -10,14 +10,16 @@ use App\Repositories\Employer\EmployerRepository;
 use App\Repositories\Employer\EmployerRepositoryInterface;
 use App\Repositories\File\FileRepository;
 use App\Repositories\File\FileRepositoryInterface;
+use App\Repositories\JobApplication\JobApplicationRepository;
+use App\Repositories\JobApplication\JobApplicationRepositoryInterface;
 use App\Repositories\JobSeeker\JobSeekerRepository;
 use App\Repositories\JobSeeker\JobSeekerRepositoryInterface;
 use App\Services\Auth\AuthService;
 use App\Services\Auth\AuthServiceInterface;
 use App\Services\Employer\EmployerService;
 use App\Services\Employer\EmployerServiceInterface;
-use App\Services\JobApplication\JobApplicationInterface;
 use App\Services\JobApplication\JobApplicationService;
+use App\Services\JobApplication\JobApplicationServiceInterface;
 use App\Services\JobSeeker\JobSeekerService;
 use App\Services\JobSeeker\JobSeekerServiceInterface;
 use Illuminate\Support\ServiceProvider;
@@ -41,7 +43,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(JobSeekerServiceInterface::class, JobSeekerService::class);
         $this->app->bind(JobSeekerRepositoryInterface::class, JobSeekerRepository::class);
 
-        $this->app->bind(JobApplicationInterface::class, JobApplicationService::class);
+        $this->app->bind(JobApplicationServiceInterface::class, JobApplicationService::class);
+        $this->app->bind(JobApplicationRepositoryInterface::class, JobApplicationRepository::class);
     }
 
     /**

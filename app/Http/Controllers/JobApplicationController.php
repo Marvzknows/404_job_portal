@@ -3,10 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreJobApplicationRequest;
+use App\Services\JobApplication\JobApplicationServiceInterface;
 use Illuminate\Http\Request;
 
 class JobApplicationController extends Controller
 {
+
+    private JobApplicationServiceInterface $jobApplicationService;
+
+    public function __construct(JobApplicationServiceInterface $jobApplicationService)
+    {
+        $this->jobApplicationService = $jobApplicationService;
+    }
 
     public function index()
     {
@@ -17,6 +25,8 @@ class JobApplicationController extends Controller
     {
         $validated = $request->validated();
         $resume = $request->file('resume');
+
+        $this->jobApplicationService->createJobApplication($validated, $resume ?? null);
 
         return response()->json([
             'success' => true,
