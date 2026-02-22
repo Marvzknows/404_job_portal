@@ -39,7 +39,7 @@ class JobApplicationRepository extends BaseRepository implements JobApplicationR
     {
         $perPage = $filters['per_page'] ?? 15;
 
-        $query = JobApplication::with(['jobSeeker', 'jobListing'])
+        $query = JobApplication::with(['jobSeeker.user', 'jobListing'])
             ->whereHas(
                 'jobListing',
                 fn($q) =>
@@ -63,7 +63,7 @@ class JobApplicationRepository extends BaseRepository implements JobApplicationR
     {
         $perPage = $filters['per_page'] ?? 15;
 
-        $query = JobApplication::with(['jobSeeker', 'jobListing'])
+        $query = JobApplication::with(['jobSeeker.user', 'jobListing'])
             ->where('job_seeker_id', $jobSeekerId);
 
         if (!empty($filters['status'])) {
@@ -82,7 +82,7 @@ class JobApplicationRepository extends BaseRepository implements JobApplicationR
     {
         $perPage = $filters['per_page'] ?? 15;
 
-        $query = JobApplication::with(['jobSeeker', 'jobListing']);
+        $query = JobApplication::with(['jobSeeker.user', 'jobListing']);
 
         if (!empty($filters['status'])) {
             $query->where('status', $filters['status']);

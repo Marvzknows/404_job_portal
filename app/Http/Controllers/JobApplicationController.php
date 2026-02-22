@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreJobApplicationRequest;
 use App\Http\Requests\UpdateJobApplicationRequest;
+use App\Http\Resources\JobApplicationListResource;
 use App\Services\JobApplication\JobApplicationServiceInterface;
 use Illuminate\Http\Request;
 
@@ -24,7 +25,11 @@ class JobApplicationController extends Controller
 
         $jobApplications = $this->jobApplicationService->getJobApplicationList($filters, $user);
 
-        return response()->json($jobApplications);
+        return response()->json([
+            'success' => true,
+            'message' => 'Job applications retrieved successfully',
+            'data'    => JobApplicationListResource::collection($jobApplications)->response()->getData()
+        ]);
     }
 
     public function store(StoreJobApplicationRequest $request)
