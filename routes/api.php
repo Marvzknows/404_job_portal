@@ -78,9 +78,7 @@ Route::middleware(['auth:sanctum', 'role:job_seeker'])
 #region Job Application Routes
 // (GENERAL)
 
-// GET: '/' (view paginated application list)
 Route::middleware('auth:sanctum')->get('/job-application', [JobApplicationController::class, 'index'])->name('job_application.index');
-// GET: '/{applicationId} (view applicaton details)
 Route::middleware('auth:sanctum')->get('/job-application/{jobApplicationId}', [JobApplicationController::class, 'show'])->name('job_application.show');
 // PUT: '{applicationId}/status' (update application status)
 // Employer - viewed, shortlisted, accepted, rejected

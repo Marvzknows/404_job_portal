@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreJobApplicationRequest;
 use App\Http\Requests\UpdateJobApplicationRequest;
 use App\Http\Resources\JobApplicationListResource;
+use App\Http\Resources\ShowJobApplicationResource;
+use App\Repositories\JobApplication\JobApplicationRepositoryInterface;
 use App\Services\JobApplication\JobApplicationServiceInterface;
 use Illuminate\Http\Request;
 
@@ -12,10 +14,12 @@ class JobApplicationController extends Controller
 {
 
     private JobApplicationServiceInterface $jobApplicationService;
+    private JobApplicationRepositoryInterface $jobApplicationRepository;
 
-    public function __construct(JobApplicationServiceInterface $jobApplicationService)
+    public function __construct(JobApplicationServiceInterface $jobApplicationService, JobApplicationRepositoryInterface $jobApplicationRepository)
     {
         $this->jobApplicationService = $jobApplicationService;
+        $this->jobApplicationRepository = $jobApplicationRepository;
     }
 
     public function index(Request $request)
@@ -45,9 +49,14 @@ class JobApplicationController extends Controller
         ]);
     }
 
-    public function show(string $id)
+    public function show(int $jobApplication)
     {
-        return 'show';
+        $application = $this->jobApplicationRepository->findById($jobApplication);
+        return response()->json([
+            'success' => true,
+            'message' => 'Job application retrieved successfully',
+            'data' => new ShowJobApplicationResource($application)
+        ]);
     }
 
     public function update(UpdateJobApplicationRequest $request, int $jobApplicationId)
