@@ -92,7 +92,6 @@ Route::middleware(['auth:sanctum', 'role:job_seeker'])
     ->prefix('job-application')
     ->group(function () {
         Route::post('/', [JobApplicationController::class, 'store'])->name('job_application.store');
-        // PUT: '{applicationId}/' (update application details)
         Route::put('/{jobApplicationId}', [JobApplicationController::class, 'update'])->name('job_application.update');
         // DELETE: '/{applicationId}' (delete job application)'
         Route::delete('/{jobApplicationId}', [JobApplicationController::class, 'destroy'])->name('job_application.destroy');

@@ -12,4 +12,10 @@ interface JobApplicationRepositoryInterface
     public function findById(int $jobApplicationId): JobApplication;
 
     public function updateJobApplication(int $jobApplicationId, array $data);
+
+    public function getJobSeekerJobApplicationList(array $filters, int $jobSeekerId);
+
+    public function getEmployerJobApplicationList(array $filters, int $employerId);
+
+    public function getAllJobApplications(array $filters);
 }

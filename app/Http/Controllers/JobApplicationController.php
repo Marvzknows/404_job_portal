@@ -17,9 +17,14 @@ class JobApplicationController extends Controller
         $this->jobApplicationService = $jobApplicationService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return 'job application paginated list';
+        $filters = $request->only(['search', 'status', 'per_page']);
+        $user = $request->user();
+
+        $jobApplications = $this->jobApplicationService->getJobApplicationList($filters, $user);
+
+        return response()->json($jobApplications);
     }
 
     public function store(StoreJobApplicationRequest $request)

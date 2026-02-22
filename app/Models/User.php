@@ -76,4 +76,14 @@ class User extends Authenticatable
     {
         return $this->belongsTo(File::class, 'avatar_id');
     }
+
+    public function isEmployer(): bool
+    {
+        return $this->role === 'employer';
+    }
+
+    public function isJobSeeker(): bool
+    {
+        return $this->role === 'job_seeker';
+    }
 }

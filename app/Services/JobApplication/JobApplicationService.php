@@ -3,6 +3,7 @@
 namespace App\Services\JobApplication;
 
 use App\Models\JobApplication;
+use App\Models\User;
 use App\Repositories\File\FileRepositoryInterface;
 use App\Repositories\JobApplication\JobApplicationRepositoryInterface;
 use Illuminate\Http\UploadedFile;
@@ -74,5 +75,18 @@ class JobApplicationService implements JobApplicationServiceInterface
     public function findJobApplicationById(int $jobApplicationId): JobApplication
     {
         return $this->jobApplicationRepository->findById($jobApplicationId);
+    }
+
+    public function getJobApplicationList(array $filters, User $user)
+    {
+        if ($user->isEmployer()) {
+            return $this->jobApplicationRepository->getEmployerJobApplicationList($filters, $user->employer->id);
+        }
+
+        if ($user->isJobSeeker()) {
+            return $this->jobApplicationRepository->getJobSeekerJobApplicationList($filters, $user->jobSeeker->id);
+        }
+
+        return $this->jobApplicationRepository->getAllJobApplications($filters);
     }
 }

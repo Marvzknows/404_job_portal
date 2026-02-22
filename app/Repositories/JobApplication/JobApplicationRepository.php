@@ -34,4 +34,66 @@ class JobApplicationRepository extends BaseRepository implements JobApplicationR
     {
         return JobApplication::where('id', $jobApplicationId)->update($data);
     }
+
+    public function getEmployerJobApplicationList(array $filters, int $employerId)
+    {
+        $perPage = $filters['per_page'] ?? 15;
+
+        $query = JobApplication::with(['jobSeeker', 'jobListing'])
+            ->whereHas(
+                'jobListing',
+                fn($q) =>
+                $q->where('employer_id', $employerId)
+            );
+
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        if (!empty($filters['search'])) {
+            $query->whereHas('jobListing', function ($q) use ($filters) {
+                $q->where('title', 'like', '%' . $filters['search'] . '%');
+            });
+        }
+
+        return $query->latest()->paginate($perPage);
+    }
+
+    public function getJobSeekerJobApplicationList(array $filters, int $jobSeekerId)
+    {
+        $perPage = $filters['per_page'] ?? 15;
+
+        $query = JobApplication::with(['jobSeeker', 'jobListing'])
+            ->where('job_seeker_id', $jobSeekerId);
+
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        if (!empty($filters['search'])) {
+            $query->whereHas('jobListing', function ($q) use ($filters) {
+                $q->where('title', 'like', '%' . $filters['search'] . '%');
+            });
+        }
+
+        return $query->latest()->paginate($perPage);
+    }
+    public function getAllJobApplications(array $filters)
+    {
+        $perPage = $filters['per_page'] ?? 15;
+
+        $query = JobApplication::with(['jobSeeker', 'jobListing']);
+
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        if (!empty($filters['search'])) {
+            $query->whereHas('jobListing', function ($q) use ($filters) {
+                $q->where('title', 'like', '%' . $filters['search'] . '%');
+            });
+        }
+
+        return $query->latest()->paginate($perPage);
+    }
 }
