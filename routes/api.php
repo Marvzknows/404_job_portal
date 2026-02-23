@@ -77,13 +77,13 @@ Route::middleware(['auth:sanctum', 'role:job_seeker'])
 
 #region Job Application Routes
 // (GENERAL)
-
-Route::middleware('auth:sanctum')->get('/job-application', [JobApplicationController::class, 'index'])->name('job_application.index');
-Route::middleware('auth:sanctum')->get('/job-application/{jobApplicationId}', [JobApplicationController::class, 'show'])->name('job_application.show');
-// PUT: '{applicationId}/status' (update application status)
-// Employer - viewed, shortlisted, accepted, rejected
-// Job Seeker - withdrawn
-Route::middleware('auth:sanctum')->put('/job-application/{jobApplicationId}/status', [JobApplicationController::class, 'updateStatus'])->name('job_application.updateStatus');
+Route::middleware(['auth:sanctum'])
+    ->prefix('job-application')
+    ->group(function () {
+        Route::get('/', [JobApplicationController::class, 'index'])->name('job_application.index');
+        Route::get('/{jobApplicationId}', [JobApplicationController::class, 'show'])->name('job_application.show');
+        Route::put('/{jobApplicationId}/status', [JobApplicationController::class, 'updateStatus'])->name('job_application.updateStatus');
+    });
 
 // (JOB SEEKER)
 Route::middleware(['auth:sanctum', 'role:job_seeker'])
