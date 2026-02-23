@@ -83,7 +83,7 @@ Route::middleware('auth:sanctum')->get('/job-application/{jobApplicationId}', [J
 // PUT: '{applicationId}/status' (update application status)
 // Employer - viewed, shortlisted, accepted, rejected
 // Job Seeker - withdrawn
-Route::middleware('auth:sanctum')->put('/job-application/{jobApplicationId}', [JobApplicationController::class, 'updateStatus'])->name('job_application.updateStatus');
+Route::middleware('auth:sanctum')->put('/job-application/{jobApplicationId}/status', [JobApplicationController::class, 'updateStatus'])->name('job_application.updateStatus');
 
 // (JOB SEEKER)
 Route::middleware(['auth:sanctum', 'role:job_seeker'])

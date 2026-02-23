@@ -18,4 +18,6 @@ interface JobApplicationRepositoryInterface
     public function getEmployerJobApplicationList(array $filters, int $employerId);
 
     public function getAllJobApplications(array $filters);
+
+    public function updateJobApplicationStatus(int $jobApplicationId, string $status);
 }

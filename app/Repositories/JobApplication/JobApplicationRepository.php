@@ -96,4 +96,9 @@ class JobApplicationRepository extends BaseRepository implements JobApplicationR
 
         return $query->latest()->paginate($perPage);
     }
+
+    public function updateJobApplicationStatus(int $jobApplicationId, string $status)
+    {
+        return JobApplication::where('id', $jobApplicationId)->update(['status' => $status]);
+    }
 }

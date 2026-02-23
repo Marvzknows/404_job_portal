@@ -89,4 +89,40 @@ class JobApplicationService implements JobApplicationServiceInterface
 
         return $this->jobApplicationRepository->getAllJobApplications($filters);
     }
+
+    public function updateJobApplicationStatus(int $jobApplicationId, string $status)
+    {
+
+        $user = request()->user();
+        $jobApplication = $this->findJobApplicationById($jobApplicationId);
+        if ($user->isEmployer()) {
+            if (!in_array($status, ['viewed', 'shortlisted', 'accepted', 'rejected'])) {
+                throw ValidationException::withMessages([
+                    'status' => ['Invalid status for employer']
+                ]);
+            }
+            // Job application's job listing should be owned by the logged in employer
+            if ($jobApplication->jobListing->employer_id !== $user->employer->id) {
+                throw ValidationException::withMessages([
+                    'job_application' => ['You are not authorized to update this job application.']
+                ]);
+            }
+        }
+
+        if ($user->isJobSeeker()) {
+            if (!in_array($status, ['withdrawn'])) {
+                throw ValidationException::withMessages([
+                    'status' => ['Invalid status for job seeker']
+                ]);
+            }
+            // Job Application should be created by the logged in job seeker
+            if ($jobApplication->job_seeker_id !== $user->jobSeeker->id) {
+                throw ValidationException::withMessages([
+                    'job_application' => ['You are not authorized to update this job application.']
+                ]);
+            }
+        }
+
+        return $this->jobApplicationRepository->updateJobApplicationStatus($jobApplicationId, $status);
+    }
 }

@@ -72,7 +72,16 @@ class JobApplicationController extends Controller
 
     public function updateStatus(Request $request, int $jobApplicationId)
     {
-        return 'update application status';
+        $validated = $request->validate([
+            'status' => 'required|string|in:viewed,shortlisted,accepted,rejected,withdrawn'
+        ]);
+
+        $this->jobApplicationService->updateJobApplicationStatus($jobApplicationId, $validated['status']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Job application status updated successfully',
+        ]);
     }
 
     public function destroy(string $id)

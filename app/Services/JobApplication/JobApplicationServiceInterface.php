@@ -15,4 +15,6 @@ interface JobApplicationServiceInterface
     public function updateJobApplication(int $jobApplicationId, array $data, ?UploadedFile $resume);
 
     public function findJobApplicationById(int $jobApplicationId): JobApplication;
+
+    public function updateJobApplicationStatus(int $jobApplicationId, string $status);
 }
