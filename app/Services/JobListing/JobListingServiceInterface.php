@@ -8,7 +8,7 @@ interface JobListingServiceInterface
 {
     public function createJobListing(array $data, User $user);
 
-    public function jobListingList(array $filters = []);
+    public function jobListingList(array $filters = [], int | null $employerId = null);
 
     public function updateJobListing(array $data, int $jobId);
 

@@ -28,10 +28,9 @@ class JobListingService implements JobListingServiceInterface
         return $this->jobListingRepository->update($data, $jobId);
     }
 
-    public function jobListingList(array $filters = [])
+    public function jobListingList(array $filters = [], int | null $employerId = null)
     {
-        $user = request()->user();
-        $employerId = null;
+        // $user = request()->user();
         // $allowedSortColumns = ['created_at', 'title', 'salary_min', 'salary_max'];
 
         // if (!in_array($filters['sort_by'] ?? null, $allowedSortColumns)) {
@@ -39,9 +38,9 @@ class JobListingService implements JobListingServiceInterface
         // }
 
 
-        if ($user->role !== 'admin') {
-            $employerId = $user->employer->id;
-        }
+        // if ($user && $user->role === 'employer') {
+        //     $employerId = $user->employer->id;
+        // }
 
         return $this->jobListingRepository->getPaginated($filters, $employerId ?? null);
     }

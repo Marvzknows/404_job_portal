@@ -20,6 +20,10 @@ Route::get('/test', function () {
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+#region Public Route
+Route::get('/jobs/list', [JobController::class, 'list'])->name('jobs.list');
+#endregion
+
 Route::middleware([
     'api',
     'auth:sanctum',
