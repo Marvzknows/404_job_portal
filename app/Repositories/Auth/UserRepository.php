@@ -15,7 +15,7 @@ class UserRepository implements UserRepositoryInterface
 
     public function findByEmail(string $email)
     {
-        return User::where('email', $email)->first();
+        return User::with('avatar')->where('email', $email)->first();
     }
 
     public function getAuthenticatedUserWithProfile(int $userId)
