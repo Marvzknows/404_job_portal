@@ -16,4 +16,6 @@ interface AuthServiceInterface
     public function me(User $user);
 
     public function updateAvatar(UploadedFile $file, User $user);
+
+    public function changePassword(array $data, User $user);
 }

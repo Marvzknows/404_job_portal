@@ -72,4 +72,19 @@ class AuthController extends Controller
             'message' => 'User avatar updated successfully'
         ], 200);
     }
+
+    public function changePassword(Request $request)
+    {
+        $validated = $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|min:8|confirmed'
+        ]);
+
+        $this->authServiceInterface->changePassword($validated, $request->user());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Password updated successfully'
+        ], 200);
+    }
 }

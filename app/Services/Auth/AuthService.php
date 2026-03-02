@@ -68,4 +68,19 @@ class AuthService implements AuthServiceInterface
             return $this->userRepositoryInterface->updateUser(['avatar_id' => $newAvatar->id], $user->id);
         });
     }
+
+    public function changePassword(array $data, User $user)
+    {
+        if (!Hash::check($data['current_password'], $user->password)) {
+            throw new \InvalidArgumentException('Current password is incorrect.');
+        }
+
+        $updatedUser = $this->userRepositoryInterface->updateUser([
+            "password" => Hash::make($data['new_password'])
+        ], $user->id);
+
+        $user->tokens()->delete();
+
+        return $updatedUser;
+    }
 }
