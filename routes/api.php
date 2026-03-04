@@ -22,6 +22,8 @@ Route::post('/login', [AuthController::class, 'login']);
 
 #region Public Route
 Route::get('/jobs/list', [JobController::class, 'list'])->name('jobs.list');
+Route::get('/jobs/{jobId}', [JobController::class, 'show'])->name('jobs.show');
+
 #endregion
 
 Route::middleware([
