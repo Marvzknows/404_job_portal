@@ -2,8 +2,10 @@
 
 namespace App\Services\JobListing;
 
+use App\Helpers\ActivityLogger;
 use App\Repositories\JobListing\JobListingRepositoryInterface;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class JobListingService implements JobListingServiceInterface
@@ -17,9 +19,22 @@ class JobListingService implements JobListingServiceInterface
 
     public function createJobListing(array $data, User $user)
     {
-        // Attach user info if needed
-        $data['employer_id'] = $user->employer->id;
-        return $this->jobListingRepository->create($data);
+        return DB::transaction(function () use ($data, $user) {
+
+            $data['employer_id'] = $user->employer->id;
+
+            $job = $this->jobListingRepository->create($data);
+
+            ActivityLogger::log(
+                $user->id,
+                'JOB_CREATED',
+                "Created job {$data['title']}",
+                $job->id,
+                null
+            );
+
+            return $job;
+        });
     }
 
     public function updateJobListing(array $data, int $jobId)
