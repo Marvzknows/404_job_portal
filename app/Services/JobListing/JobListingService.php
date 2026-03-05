@@ -82,15 +82,22 @@ class JobListingService implements JobListingServiceInterface
                 'authorization' => ['You are not authorized to update this job listing.']
             ]);
         }
+
+        return $job;
     }
 
     public function deleteJob(int $jobId)
     {
         return DB::transaction(function () use ($jobId) {
+
             $user = request()->user();
 
             $this->authorizeEmployerJob($jobId);
-            $job = $this->jobListingRepository->deleteJobListing($jobId);
+
+            $job = $this->jobListingRepository->show($jobId);
+
+            $this->jobListingRepository->deleteJobListing($jobId);
+
             ActivityLogger::log(
                 $user->id,
                 'JOB_DELETED',
@@ -98,12 +105,30 @@ class JobListingService implements JobListingServiceInterface
                 $job->id,
                 null
             );
+
+            return true;
         });
     }
 
     public function updateJobStatus(string $status, int $jobId)
     {
-        $this->authorizeEmployerJob($jobId);
-        return $this->jobListingRepository->updateJobStatus($status, $jobId);
+        return DB::transaction(function () use ($status, $jobId) {
+
+            $user = request()->user();
+
+            $job = $this->authorizeEmployerJob($jobId);
+
+            $this->jobListingRepository->updateJobStatus($status, $jobId);
+
+            ActivityLogger::log(
+                $user->id,
+                'JOB_UPDATED',
+                "Updated job status of {$job->title} to {$status}",
+                $job->id,
+                null
+            );
+
+            return $job;
+        });
     }
 }
