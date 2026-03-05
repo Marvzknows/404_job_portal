@@ -42,12 +42,22 @@ class JobApplicationService implements JobApplicationServiceInterface
 
             $resumeFile = $this->fileRepository->store($resume, $user->id, 'resume');
 
-            return $this->jobApplicationRepository->createJobApplication([
+            $jobApplication = $this->jobApplicationRepository->createJobApplication([
                 'job_seeker_id' => $user->jobSeeker->id,
                 'job_listing_id' => $data['job_listing_id'],
                 'cover_letter' => $data['cover_letter'] ?? null,
                 'resume_id' => $resumeFile->id,
             ]);
+
+            ActivityLogger::log(
+                $user->id,
+                'JOB_APPLIED',
+                "Submitted job application",
+                null,
+                $jobApplication->id
+            );
+
+            return $jobApplication;
         });
     }
 
