@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\EmployerController;
 use App\Http\Controllers\JobApplicationController;
@@ -106,12 +107,12 @@ Route::middleware(['auth:sanctum', 'role:job_seeker'])
 #endregion
 
 #region Activity Logs
-// Route::middleware(['auth:sanctum'])
-//     ->prefix('activity-log')
-//     ->group(function () {
-//         Route::get('/list', [ActivityLogController::class, 'list'])->name('activity_log.list');
-//         Route::post('/', [ActivityLogController::class, 'store'])->name('activity_log.store');
-//         Route::get('/{activityLogId}', [ActivityLogController::class, 'show'])->name('activity_log.show');
-//         Route::put('/{activityLogId}', [ActivityLogController::class, 'update'])->name('activity_log.update');
-//     });
+Route::middleware(['auth:sanctum'])
+    ->prefix('activity-log')
+    ->group(function () {
+        Route::get('/list', [ActivityLogController::class, 'list'])->name('activity_log.list');
+        // Route::post('/', [ActivityLogController::class, 'store'])->name('activity_log.store');
+        // Route::get('/{activityLogId}', [ActivityLogController::class, 'show'])->name('activity_log.show');
+        // Route::put('/{activityLogId}', [ActivityLogController::class, 'update'])->name('activity_log.update');
+    });
 #endregion

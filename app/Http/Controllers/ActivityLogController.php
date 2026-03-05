@@ -2,14 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\ActivityLogs\ActivityLogServiceInterface;
 use Illuminate\Http\Request;
 
 class ActivityLogController extends Controller
 {
+    private ActivityLogServiceInterface $activityLogService;
 
-    public function list()
+    public function __construct(ActivityLogServiceInterface $activityLogService)
     {
-        return 'paginated activity log list';
+        $this->activityLogService = $activityLogService;
+    }
+
+    public function list(Request $request)
+    {
+        return $this->activityLogService->getActivityLogs($request->query());
     }
 
     public function store(Request $request)

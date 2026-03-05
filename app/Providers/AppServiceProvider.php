@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Repositories\ActivityLog\ActivityLogRepository;
+use App\Repositories\ActivityLog\ActivityLogRepositoryInterface;
 use App\Repositories\Auth\UserRepositoryInterface;
 use App\Repositories\Auth\UserRepository;
 use App\Repositories\Base\BaseRepository;
@@ -14,6 +16,8 @@ use App\Repositories\JobApplication\JobApplicationRepository;
 use App\Repositories\JobApplication\JobApplicationRepositoryInterface;
 use App\Repositories\JobSeeker\JobSeekerRepository;
 use App\Repositories\JobSeeker\JobSeekerRepositoryInterface;
+use App\Services\ActivityLogs\ActivityLogService;
+use App\Services\ActivityLogs\ActivityLogServiceInterface;
 use App\Services\Auth\AuthService;
 use App\Services\Auth\AuthServiceInterface;
 use App\Services\Employer\EmployerService;
@@ -45,6 +49,9 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(JobApplicationServiceInterface::class, JobApplicationService::class);
         $this->app->bind(JobApplicationRepositoryInterface::class, JobApplicationRepository::class);
+
+        $this->app->bind(ActivityLogServiceInterface::class, ActivityLogService::class);
+        $this->app->bind(ActivityLogRepositoryInterface::class, ActivityLogRepository::class);
     }
 
     /**
