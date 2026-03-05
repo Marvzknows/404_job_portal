@@ -17,4 +17,6 @@ interface JobApplicationServiceInterface
     public function findJobApplicationById(int $jobApplicationId): JobApplication;
 
     public function updateJobApplicationStatus(int $jobApplicationId, string $status);
+
+    public function viewJobApplication(int $jobApplicationId, User $user): JobApplication;
 }

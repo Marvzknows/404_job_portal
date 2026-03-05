@@ -2,6 +2,7 @@
 
 namespace App\Services\JobApplication;
 
+use App\Helpers\ActivityLogger;
 use App\Models\JobApplication;
 use App\Models\User;
 use App\Repositories\File\FileRepositoryInterface;
@@ -27,6 +28,12 @@ class JobApplicationService implements JobApplicationServiceInterface
         return DB::transaction(function () use ($data, $resume) {
 
             $user = request()->user();
+            if (!$user->jobSeeker) {
+                throw ValidationException::withMessages([
+                    'job_listing_id' => ['You dont have a job seeker profile.']
+                ]);
+            }
+
             if ($this->jobApplicationRepository->findDuplicateApplication($user->jobSeeker->id, $data['job_listing_id'])) {
                 throw ValidationException::withMessages([
                     'job_listing_id' => ['You have already applied for this job.']
@@ -124,5 +131,18 @@ class JobApplicationService implements JobApplicationServiceInterface
         }
 
         return $this->jobApplicationRepository->updateJobApplicationStatus($jobApplicationId, $status);
+    }
+
+    public function viewJobApplication(int $jobApplicationId, User $user): JobApplication
+    {
+        return DB::transaction(function () use ($jobApplicationId, $user) {
+            $jobApplication = $this->findJobApplicationById($jobApplicationId);
+
+            if ($user->isEmployer() && $jobApplication->status === 'pending') {
+                ActivityLogger::log($user->id, 'JOB_VIEWED', 'Viewed job application', null, $jobApplicationId);
+            }
+
+            return $jobApplication;
+        });
     }
 }
