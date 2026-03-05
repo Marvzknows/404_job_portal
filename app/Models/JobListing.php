@@ -30,4 +30,9 @@ class JobListing extends Model
     {
         return $this->hasMany(JobApplication::class);
     }
+
+    public function activityLogs()
+    {
+        return $this->hasMany(ActivityLog::class);
+    }
 }

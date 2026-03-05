@@ -31,4 +31,9 @@ class JobApplication extends Model
     {
         return $this->belongsTo(File::class, 'resume_id');
     }
+
+    public function activityLogs()
+    {
+        $this->hasMany(ActivityLog::class);
+    }
 }
