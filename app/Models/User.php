@@ -86,4 +86,9 @@ class User extends Authenticatable
     {
         return $this->role === 'job_seeker';
     }
+
+    public function activityLogs()
+    {
+        $this->hasMany(ActivityLog::class);
+    }
 }

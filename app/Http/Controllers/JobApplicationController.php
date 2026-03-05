@@ -49,9 +49,10 @@ class JobApplicationController extends Controller
         ]);
     }
 
-    public function show(int $jobApplication)
+    public function show(int $jobApplication, Request $request)
     {
-        $application = $this->jobApplicationRepository->findById($jobApplication);
+        $user = $request->user();
+        $application = $this->jobApplicationService->viewJobApplication($jobApplication, $user);
         return response()->json([
             'success' => true,
             'message' => 'Job application retrieved successfully',

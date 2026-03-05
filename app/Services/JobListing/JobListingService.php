@@ -2,8 +2,10 @@
 
 namespace App\Services\JobListing;
 
+use App\Helpers\ActivityLogger;
 use App\Repositories\JobListing\JobListingRepositoryInterface;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class JobListingService implements JobListingServiceInterface
@@ -17,15 +19,38 @@ class JobListingService implements JobListingServiceInterface
 
     public function createJobListing(array $data, User $user)
     {
-        // Attach user info if needed
-        $data['employer_id'] = $user->employer->id;
-        return $this->jobListingRepository->create($data);
+        return DB::transaction(function () use ($data, $user) {
+
+            $data['employer_id'] = $user->employer->id;
+
+            $job = $this->jobListingRepository->create($data);
+
+            ActivityLogger::log(
+                $user->id,
+                'JOB_CREATED',
+                "Created job {$data['title']}",
+                $job->id,
+                null
+            );
+
+            return $job;
+        });
     }
 
     public function updateJobListing(array $data, int $jobId)
     {
-        $this->authorizeEmployerJob($jobId);
-        return $this->jobListingRepository->update($data, $jobId);
+        return DB::transaction(function () use ($data, $jobId) {
+            $this->authorizeEmployerJob($jobId);
+            $job = $this->jobListingRepository->update($data, $jobId);
+            ActivityLogger::log(
+                request()->user()->id,
+                'JOB_UPDATED',
+                "Updated job {$data['title']}",
+                $job->id,
+                null
+            );
+            return $job;
+        });
     }
 
     public function jobListingList(array $filters = [], int | null $employerId = null)
@@ -57,17 +82,53 @@ class JobListingService implements JobListingServiceInterface
                 'authorization' => ['You are not authorized to update this job listing.']
             ]);
         }
+
+        return $job;
     }
 
     public function deleteJob(int $jobId)
     {
-        $this->authorizeEmployerJob($jobId);
-        return $this->jobListingRepository->deleteJobListing($jobId);
+        return DB::transaction(function () use ($jobId) {
+
+            $user = request()->user();
+
+            $this->authorizeEmployerJob($jobId);
+
+            $job = $this->jobListingRepository->show($jobId);
+
+            $this->jobListingRepository->deleteJobListing($jobId);
+
+            ActivityLogger::log(
+                $user->id,
+                'JOB_DELETED',
+                "Deleted job {$job->title}",
+                $job->id,
+                null
+            );
+
+            return true;
+        });
     }
 
     public function updateJobStatus(string $status, int $jobId)
     {
-        $this->authorizeEmployerJob($jobId);
-        return $this->jobListingRepository->updateJobStatus($status, $jobId);
+        return DB::transaction(function () use ($status, $jobId) {
+
+            $user = request()->user();
+
+            $job = $this->authorizeEmployerJob($jobId);
+
+            $this->jobListingRepository->updateJobStatus($status, $jobId);
+
+            ActivityLogger::log(
+                $user->id,
+                'JOB_UPDATED',
+                "Updated job status of {$job->title} to {$status}",
+                $job->id,
+                null
+            );
+
+            return $job;
+        });
     }
 }
