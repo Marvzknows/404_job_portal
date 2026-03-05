@@ -86,8 +86,19 @@ class JobListingService implements JobListingServiceInterface
 
     public function deleteJob(int $jobId)
     {
-        $this->authorizeEmployerJob($jobId);
-        return $this->jobListingRepository->deleteJobListing($jobId);
+        return DB::transaction(function () use ($jobId) {
+            $user = request()->user();
+
+            $this->authorizeEmployerJob($jobId);
+            $job = $this->jobListingRepository->deleteJobListing($jobId);
+            ActivityLogger::log(
+                $user->id,
+                'JOB_DELETED',
+                "Deleted job {$job->title}",
+                $job->id,
+                null
+            );
+        });
     }
 
     public function updateJobStatus(string $status, int $jobId)
