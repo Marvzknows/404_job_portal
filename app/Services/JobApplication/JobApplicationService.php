@@ -99,38 +99,75 @@ class JobApplicationService implements JobApplicationServiceInterface
 
     public function updateJobApplicationStatus(int $jobApplicationId, string $status)
     {
+        return DB::transaction(function () use ($status, $jobApplicationId) {
 
-        $user = request()->user();
-        $jobApplication = $this->findJobApplicationById($jobApplicationId);
-        if ($user->isEmployer()) {
-            if (!in_array($status, ['viewed', 'shortlisted', 'accepted', 'rejected'])) {
-                throw ValidationException::withMessages([
-                    'status' => ['Invalid status for employer']
-                ]);
+            $user = request()->user();
+            $jobApplication = $this->findJobApplicationById($jobApplicationId);
+
+            if ($user->isEmployer()) {
+
+                if (!in_array($status, ['viewed', 'shortlisted', 'accepted', 'rejected'])) {
+                    throw ValidationException::withMessages([
+                        'status' => ['Invalid status for employer']
+                    ]);
+                }
+
+                if ($jobApplication->jobListing->employer_id !== $user->employer->id) {
+                    throw ValidationException::withMessages([
+                        'job_application' => ['You are not authorized to update this job application.']
+                    ]);
+                }
             }
-            // Job application's job listing should be owned by the logged in employer
-            if ($jobApplication->jobListing->employer_id !== $user->employer->id) {
-                throw ValidationException::withMessages([
-                    'job_application' => ['You are not authorized to update this job application.']
-                ]);
+
+            if ($user->isJobSeeker()) {
+
+                if (!in_array($status, ['withdrawn'])) {
+                    throw ValidationException::withMessages([
+                        'status' => ['Invalid status for job seeker']
+                    ]);
+                }
+
+                if ($jobApplication->job_seeker_id !== $user->jobSeeker->id) {
+                    throw ValidationException::withMessages([
+                        'job_application' => ['You are not authorized to update this job application.']
+                    ]);
+                }
             }
+
+            // update first
+            $this->jobApplicationRepository->updateJobApplicationStatus($jobApplicationId, $status);
+
+            $activityLogStatus = $this->applicationStatusParser($status);
+
+            ActivityLogger::log(
+                $user->id,
+                $activityLogStatus,
+                "Updated job application status to {$status}",
+                null,
+                $jobApplication->id
+            );
+
+            return $jobApplication;
+        });
+    }
+
+    private function applicationStatusParser(string $status)
+    {
+        $validStatuses = ['viewed', 'shortlisted', 'accepted', 'rejected', 'withdrawn'];
+        $convertedAction = [
+            'viewed' => 'JOB_VIEWED',
+            'shortlisted' => 'JOB_SHORTLISTED',
+            'accepted' => 'JOB_ACCEPTED',
+            'rejected' => 'JOB_REJECTED',
+            'withdrawn' => 'APPLICATION_WITHDRAWN',
+        ];
+
+        if (!in_array($status, $validStatuses)) {
+            throw ValidationException::withMessages([
+                'status' => ['Invalid job application status']
+            ]);
         }
-
-        if ($user->isJobSeeker()) {
-            if (!in_array($status, ['withdrawn'])) {
-                throw ValidationException::withMessages([
-                    'status' => ['Invalid status for job seeker']
-                ]);
-            }
-            // Job Application should be created by the logged in job seeker
-            if ($jobApplication->job_seeker_id !== $user->jobSeeker->id) {
-                throw ValidationException::withMessages([
-                    'job_application' => ['You are not authorized to update this job application.']
-                ]);
-            }
-        }
-
-        return $this->jobApplicationRepository->updateJobApplicationStatus($jobApplicationId, $status);
+        return $convertedAction[$status] ?? $status;
     }
 
     public function viewJobApplication(int $jobApplicationId, User $user): JobApplication
