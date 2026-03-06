@@ -16,6 +16,8 @@ use App\Repositories\JobApplication\JobApplicationRepository;
 use App\Repositories\JobApplication\JobApplicationRepositoryInterface;
 use App\Repositories\JobSeeker\JobSeekerRepository;
 use App\Repositories\JobSeeker\JobSeekerRepositoryInterface;
+use App\Repositories\SavedJob\SavedJobRepository;
+use App\Repositories\SavedJob\SavedJobRepositoryInterface;
 use App\Services\ActivityLogs\ActivityLogService;
 use App\Services\ActivityLogs\ActivityLogServiceInterface;
 use App\Services\Auth\AuthService;
@@ -26,6 +28,8 @@ use App\Services\JobApplication\JobApplicationService;
 use App\Services\JobApplication\JobApplicationServiceInterface;
 use App\Services\JobSeeker\JobSeekerService;
 use App\Services\JobSeeker\JobSeekerServiceInterface;
+use App\Services\SavedJob\SavedJobService;
+use App\Services\SavedJob\SavedJobServiceInterface;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -52,6 +56,9 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(ActivityLogServiceInterface::class, ActivityLogService::class);
         $this->app->bind(ActivityLogRepositoryInterface::class, ActivityLogRepository::class);
+
+        $this->app->bind(SavedJobServiceInterface::class, SavedJobService::class);
+        $this->app->bind(SavedJobRepositoryInterface::class, SavedJobRepository::class);
     }
 
     /**
