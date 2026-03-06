@@ -51,8 +51,14 @@ class SavedJobController extends Controller
     //     return 'show';
     // }
 
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
-        return 'destroy';
+        $user = $request->user();
+        $this->savedJobService->unsaveJob($user->id, $id);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Job unsaved successfully',
+        ]);
     }
 }
