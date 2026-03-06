@@ -30,6 +30,8 @@ return new class extends Migration
                 'APPLICATION_WITHDRAWN',
                 'PROFILE_UPDATED',
                 'PASSWORD_CHANGED',
+                'SAVED_JOB',
+                'UNSAVED_JOB',
                 // For Admin
                 'USER_SUSPENDED',
                 'PAYMENT_CONFIRMED'
