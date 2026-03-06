@@ -35,4 +35,9 @@ class JobListing extends Model
     {
         return $this->hasMany(ActivityLog::class);
     }
+
+    public function savedJobs()
+    {
+        return $this->hasMany(SavedJob::class);
+    }
 }
