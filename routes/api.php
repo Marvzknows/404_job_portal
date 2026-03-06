@@ -6,6 +6,7 @@ use App\Http\Controllers\EmployerController;
 use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\JobSeekerController;
+use App\Http\Controllers\SavedJobController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -114,5 +115,15 @@ Route::middleware(['auth:sanctum'])
         // Route::post('/', [ActivityLogController::class, 'store'])->name('activity_log.store');
         // Route::get('/{activityLogId}', [ActivityLogController::class, 'show'])->name('activity_log.show');
         // Route::put('/{activityLogId}', [ActivityLogController::class, 'update'])->name('activity_log.update');
+    });
+#endregion
+
+#region Saved Jobs
+Route::middleware(['auth:sanctum', 'role:job_seeker'])
+    ->prefix('saved-jobs')
+    ->group(function () {
+        Route::get('/list', [SavedJobController::class, 'list'])->name('saved_jobs.list');
+        Route::post('/', [SavedJobController::class, 'store'])->name('saved_jobs.store');
+        Route::delete('/{savedJobId}', [SavedJobController::class, 'destroy'])->name('saved_jobs.destroy');
     });
 #endregion
