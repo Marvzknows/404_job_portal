@@ -89,6 +89,11 @@ class User extends Authenticatable
 
     public function activityLogs()
     {
-        $this->hasMany(ActivityLog::class);
+        return $this->hasMany(ActivityLog::class);
+    }
+
+    public function savedJobs()
+    {
+        return $this->hasMany(SavedJob::class);
     }
 }
