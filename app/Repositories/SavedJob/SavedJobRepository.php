@@ -27,13 +27,18 @@ class SavedJobRepository implements SavedJobRepositoryInterface
             ->paginate($perPage);
     }
 
-    public function saveJob(int $userId, int $jobId): bool
+    public function saveJob(int $userId, int $jobId)
     {
-        return true;
+        return SavedJob::create([
+            'user_id' => $userId,
+            'job_listing_id' => $jobId,
+        ]);
     }
 
-    public function unsaveJob(int $userId, int $jobId): bool
+    public function unsaveJob(int $userId, int $jobId)
     {
-        return true;
+        return SavedJob::where('user_id', $userId)
+            ->where('job_listing_id', $jobId)
+            ->delete();
     }
 }

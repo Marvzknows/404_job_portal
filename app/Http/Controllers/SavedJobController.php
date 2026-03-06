@@ -31,7 +31,19 @@ class SavedJobController extends Controller
 
     public function store(Request $request)
     {
-        return 'store';
+        $user = $request->user();
+        $request = $request->validate([
+            'job_id' => 'required|integer|exists:job_listings,id',
+        ]);
+
+        $jobId = $request['job_id'];
+
+        $this->savedJobService->saveJob($user->id, $jobId);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Job saved successfully',
+        ]);
     }
 
     // public function show(string $id)
