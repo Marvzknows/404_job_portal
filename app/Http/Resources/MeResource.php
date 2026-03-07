@@ -28,6 +28,7 @@ class MeResource extends JsonResource
         if ($this->role === 'employer' && $this->employer) {
             $employer = $this->employer;
             return [
+                'id' => $employer->id,
                 'user_id' => $employer->user_id,
                 'company_name' => $employer->company_name,
                 'company_description' => $employer->company_description,
