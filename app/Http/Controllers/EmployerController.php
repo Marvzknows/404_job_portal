@@ -28,7 +28,8 @@ class EmployerController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Employer profile created successfully'
+            'message' => 'Employer profile created successfully',
+            'data' => $data
         ]);
     }
 
@@ -44,7 +45,8 @@ class EmployerController extends Controller
     public function update(UpdateEmployerProfileRequest $request, string $employerId)
     {
         $validated = $request->validated();
-        $this->employerServiceInterface->updateEmployerProfile($employerId, $validated);
+        $logo = $request->file('logo');
+        $this->employerServiceInterface->updateEmployerProfile($employerId, $validated, $logo ?? null);
         return response()->json([
             'success' => true,
             'message' => 'Employer profile updated successfully'

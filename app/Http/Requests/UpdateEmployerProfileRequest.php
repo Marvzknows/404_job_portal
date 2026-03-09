@@ -28,6 +28,7 @@ class UpdateEmployerProfileRequest extends FormRequest
             'contact_email' => 'nullable|email|max:255|min:8',
             'contact_phone' => 'nullable|string|max:20|min:11',
             'location' => 'required|string|max:255|min:8',
+            'logo' => 'nullable|image|mimes:png,jpg,jpeg,webp|max:2048',
         ];
     }
 }

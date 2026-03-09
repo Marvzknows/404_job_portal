@@ -81,8 +81,26 @@ class EmployerService implements EmployerServiceInterface
         }
     }
 
-    public function updateEmployerProfile(int $employerId, array $data): Employer
+    public function updateEmployerProfile(int $employerId, array $data, ?UploadedFile $logo = null): Employer
     {
-        return $this->employerRepositoryInterface->updateEmployerProfile($employerId, $data);
+        return DB::transaction(function () use ($employerId, $data, $logo) {
+
+            if ($logo) {
+                $employer = $this->showEmployerProfile($employerId);
+
+                $logoFile = $this->fileRepositoryInterface->store(
+                    $logo,
+                    $employer->user_id,
+                    'employerLogos'
+                );
+
+                $data['logo_id'] = $logoFile->id;
+            }
+
+            return $this->employerRepositoryInterface->updateEmployerProfile(
+                $employerId,
+                $data
+            );
+        });
     }
 }
