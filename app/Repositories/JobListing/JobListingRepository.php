@@ -34,6 +34,7 @@ class JobListingRepository extends BaseRepository implements JobListingRepositor
 
         return JobListing::query()
             ->with('employer', 'employer.logo', 'employer.user')
+            ->withCount(['jobApplications as total_applicants'])
             ->when($employerId, function ($q) use ($employerId) {
                 $q->where('employer_id', $employerId);
             })->when($search, function ($q) use ($search) {

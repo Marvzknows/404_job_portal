@@ -29,6 +29,7 @@ class ShowJobListingListResource extends JsonResource
             'location'    => $this->location,
             'created_at'  => $this->created_at,
             'updated_at'  => $this->updated_at,
+            'total_applicants' => $this->total_applicants,
         ];
     }
 }
