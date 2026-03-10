@@ -28,6 +28,7 @@ class StoreJobRequest extends FormRequest
             'salary_max' => 'required|numeric|min:0|gte:salary_min',
             'work_setup' => 'required|in:remote,on_site,hybrid',
             'job_type' => 'required|in:full_time,part_time,contract,internship',
+            'location' => 'required|string|max:255',
         ];
     }
 

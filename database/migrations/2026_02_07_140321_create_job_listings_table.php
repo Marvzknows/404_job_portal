@@ -21,6 +21,7 @@ return new class extends Migration
             $table->decimal('salary_max', 10, 2)->nullable();
             $table->enum('work_setup', ['remote', 'on_site', 'hybrid'])->default('on_site');
             $table->enum('job_type', ['full_time', 'part_time', 'contract', 'internship'])->default('full_time');
+            $table->string('location');
             $table->timestamps();
         });
     }

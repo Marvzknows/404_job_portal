@@ -26,6 +26,7 @@ class ShowJobListingListResource extends JsonResource
             'work_setup'  => $this->work_setup,
             'job_type'    => $this->job_type,
             'employer'    => new ShowEmployerProfileResource($this->whenLoaded('employer')),
+            'location'    => $this->location,
             'created_at'  => $this->created_at,
             'updated_at'  => $this->updated_at,
         ];

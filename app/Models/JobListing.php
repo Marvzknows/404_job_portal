@@ -18,7 +18,8 @@ class JobListing extends Model
         'salary_min',
         'salary_max',
         'work_setup',
-        'job_type'
+        'job_type',
+        'location'
     ];
 
     public function employer()
