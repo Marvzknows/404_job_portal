@@ -41,7 +41,8 @@ class JobListingService implements JobListingServiceInterface
     {
         return DB::transaction(function () use ($data, $jobId) {
             $this->authorizeEmployerJob($jobId);
-            $job = $this->jobListingRepository->update($data, $jobId);
+            $job = $this->jobListingRepository->show($jobId);
+            $this->jobListingRepository->update($data, $jobId);
             ActivityLogger::log(
                 request()->user()->id,
                 'JOB_UPDATED',
