@@ -21,6 +21,7 @@ class JobApplicationListResource extends JsonResource
             "resume_id" => $this->resume_id,
             "status" => $this->status,
             "cover_letter" => $this->cover_letter,
+            "date_applied" => $this->created_at,
             "job_listing" => [
                 "id" => $this->jobListing->id,
                 "title" => $this->jobListing->title,
@@ -28,7 +29,10 @@ class JobApplicationListResource extends JsonResource
             "job_seeker" => [
                 "id" => $this->jobSeeker->id,
                 "full_name" => $this->jobSeeker->user->full_name,
-            ]
+                "email" => $this->jobSeeker->user->email,
+                "current_job_title" => $this->jobSeeker->current_job_title,
+                "avatar_url" => $this->jobSeeker->user->avatar
+            ],
         ];
     }
 }

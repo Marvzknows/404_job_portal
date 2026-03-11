@@ -39,7 +39,7 @@ class JobApplicationRepository extends BaseRepository implements JobApplicationR
     {
         $perPage = $filters['per_page'] ?? 15;
 
-        $query = JobApplication::with(['jobSeeker.user', 'jobListing'])
+        $query = JobApplication::with(['jobSeeker.user', 'jobSeeker.user.avatar', 'jobListing'])
             ->whereHas(
                 'jobListing',
                 fn($q) =>
