@@ -14,7 +14,7 @@ class ShowJobApplicationResource extends JsonResource
             'status'       => $this->status,
             'cover_letter' => $this->cover_letter,
             'applied_at'  => $this->created_at?->toDateTimeString(),
-
+            'resume' => $this->resume,
             'job_seeker' => [
                 'id'        => $this->jobSeeker?->id,
                 'bio'       => $this->jobSeeker?->bio,
