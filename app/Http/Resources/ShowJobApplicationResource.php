@@ -22,6 +22,7 @@ class ShowJobApplicationResource extends JsonResource
                 'job_title' => $this->jobSeeker?->current_job_title,
                 'phone'     => $this->jobSeeker?->phone,
                 'location'  => $this->jobSeeker?->location,
+                'resume' => $this->jobSeeker?->resume,
                 'user'      => new UserResource($this->jobSeeker?->user),
             ],
 
@@ -33,6 +34,7 @@ class ShowJobApplicationResource extends JsonResource
                 'salary_max' => $this->jobListing?->salary_max,
                 'work_setup' => $this->jobListing?->work_setup,
                 'job_type'   => $this->jobListing?->job_type,
+                'location' => $this->jobListing?->location,
                 'employer'   => [
                     'id' => $this->jobListing->employer?->id,
                     'company_name' => $this->jobListing->employer?->company_name,
