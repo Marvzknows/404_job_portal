@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ActivityLogResource;
 use App\Services\ActivityLogs\ActivityLogServiceInterface;
 use Illuminate\Http\Request;
 
@@ -16,7 +17,12 @@ class ActivityLogController extends Controller
 
     public function list(Request $request)
     {
-        return $this->activityLogService->getActivityLogs($request->query());
+        $activityLogs = $this->activityLogService->getActivityLogs($request->query());
+        return response()->json([
+            'success' => true,
+            'message' => 'Activity logs retrieved successfully',
+            'data'    => ActivityLogResource::collection($activityLogs)->response()->getData()
+        ]);
     }
 
     public function store(Request $request)

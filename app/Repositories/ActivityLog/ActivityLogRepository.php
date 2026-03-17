@@ -18,7 +18,7 @@ class ActivityLogRepository implements ActivityLogRepositoryInterface
         $sortDirection = $filters['sort_dir'] ?? 'desc';
 
         return ActivityLog::query()
-            ->with('user', 'jobListing', 'jobApplication')
+            ->with('user', 'jobListing', 'jobApplication', 'jobApplication.jobListing')
 
             ->when($action, function ($q) use ($action) {
                 $q->where('action', $action);
