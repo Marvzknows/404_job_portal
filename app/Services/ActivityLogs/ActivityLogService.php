@@ -16,6 +16,7 @@ class ActivityLogService implements ActivityLogServiceInterface
 
     public function getActivityLogs(array $filters)
     {
-        return $this->activityLogRepository->getActivityLogs($filters);
+        $user = request()->user();
+        return $this->activityLogRepository->getActivityLogs($filters, $user->id);
     }
 }
