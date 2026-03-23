@@ -39,6 +39,7 @@ Route::middleware([
         ->name('me');
     Route::post('/profile/avatar', [AuthController::class, 'updateAvatar'])->name('user.avatar');
     Route::post('/change-password', [AuthController::class, 'changePassword'])->name('user.changePassword');
+    Route::get('/resumes', [AuthController::class, 'getJobSeekerResume'])->name('user.resumes');
 });
 
 #region Employer routes

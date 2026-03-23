@@ -6,16 +6,19 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\MeResource;
+use App\Repositories\JobSeeker\JobSeekerRepositoryInterface;
 use App\Services\Auth\AuthServiceInterface;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
     private AuthServiceInterface $authServiceInterface;
+    private JobSeekerRepositoryInterface $jobSeekerRepositoryInterface;
 
-    public function __construct(AuthServiceInterface $authServiceInterface)
+    public function __construct(AuthServiceInterface $authServiceInterface, JobSeekerRepositoryInterface $jobSeekerRepositoryInterface)
     {
         $this->authServiceInterface = $authServiceInterface;
+        $this->jobSeekerRepositoryInterface = $jobSeekerRepositoryInterface;
     }
 
     public function me(Request $request)
@@ -85,6 +88,26 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Password updated successfully'
+        ], 200);
+    }
+
+    public function getJobSeekerResume(Request $request)
+    {
+        $user = $request->user();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Profile not found'
+            ], 404);
+        }
+
+        $resumes = $this->jobSeekerRepositoryInterface->getJobSeekerResumeList($user->id);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Resumes retrieved successfully',
+            'data' => $resumes
         ], 200);
     }
 }

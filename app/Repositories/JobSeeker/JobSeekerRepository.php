@@ -2,6 +2,7 @@
 
 namespace App\Repositories\JobSeeker;
 
+use App\Models\File;
 use App\Models\JobSeeker;
 use App\Repositories\Base\BaseRepository;
 
@@ -30,5 +31,12 @@ class JobSeekerRepository extends BaseRepository implements JobSeekerRepositoryI
     public function updateJobSeekerProfile(array $data, int $jobSeekerId)
     {
         return JobSeeker::findOrFail($jobSeekerId)->update($data);
+    }
+
+    public function getJobSeekerResumeList(int $userId)
+    {
+        return File::where('uploaded_by', $userId)
+            ->where('file_path', 'like', 'resume/%')
+            ->get();
     }
 }

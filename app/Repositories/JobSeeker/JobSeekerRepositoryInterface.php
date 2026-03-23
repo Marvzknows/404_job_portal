@@ -11,4 +11,6 @@ interface JobSeekerRepositoryInterface
     public function showJobSeekerProfile(int $jobSeekerId);
 
     public function updateJobSeekerProfile(array $data, int $jobSeekerId);
+
+    public function getJobSeekerResumeList(int $userId);
 }
