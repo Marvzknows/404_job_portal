@@ -41,11 +41,13 @@ class JobSeekerController extends Controller
         ]);
     }
 
-    public function updateResume(Request $request, int $jobSeekerId)
+    public function updateResume(Request $request)
     {
         $request->validate([
             'resume' => 'required|file|mimes:pdf|max:2048',
         ]);
+
+        $jobSeekerId = $request->user()->jobSeeker->id ?? 0;
 
         $resume = $request->file('resume');
         $this->jobSeekerServiceInterface->updateResume($resume, $jobSeekerId);

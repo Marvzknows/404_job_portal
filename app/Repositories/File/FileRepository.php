@@ -6,6 +6,7 @@ use App\Models\File;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use App\Repositories\File\FileRepositoryInterface;
+use Illuminate\Support\Str;
 
 class FileRepository implements FileRepositoryInterface
 {
@@ -15,7 +16,10 @@ class FileRepository implements FileRepositoryInterface
         string $directory = 'fileUploads'
     ): File {
         // Store in public disc
-        $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+        $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $safeName = Str::slug($originalName); // e.g. "My Resume" → "my-resume"
+        $fileName = $safeName . '-' . uniqid() . '.' . $file->getClientOriginalExtension();
+
         $path = $file->storeAs($directory, $fileName, 'public');
         //store in db
         return $this->create([
