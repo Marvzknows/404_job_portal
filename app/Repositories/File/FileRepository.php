@@ -28,7 +28,7 @@ class FileRepository implements FileRepositoryInterface
     }
 
 
-    public function findById(int $id)
+    public function findById(int $id): ?File
     {
         return File::find($id);
     }

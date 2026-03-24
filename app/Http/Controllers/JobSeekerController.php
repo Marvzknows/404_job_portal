@@ -65,6 +65,18 @@ class JobSeekerController extends Controller
         ]);
     }
 
+    public function deleteJobSeekerResume(Request $request, int $resumeId)
+    {
+        $user = $request->user();
+
+        $this->jobSeekerServiceInterface->deleteResume($user->id, $resumeId);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Resume deleted successfully',
+        ], 200);
+    }
+
     public function destroy(string $id)
     {
         return response()->json([
