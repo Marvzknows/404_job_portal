@@ -24,7 +24,7 @@ class JobApplicationController extends Controller
 
     public function index(Request $request)
     {
-        $filters = $request->only(['search', 'status', 'per_page']);
+        $filters = $request->only(['search', 'status', 'per_page', 'job_type', 'work_setup']);
         $user = $request->user();
 
         $jobApplications = $this->jobApplicationService->getJobApplicationList($filters, $user);

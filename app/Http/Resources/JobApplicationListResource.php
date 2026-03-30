@@ -25,6 +25,7 @@ class JobApplicationListResource extends JsonResource
             "job_listing" => [
                 "id" => $this->jobListing->id,
                 "title" => $this->jobListing->title,
+                "location" => $this->jobListing->location,
             ],
             "job_seeker" => [
                 "id" => $this->jobSeeker->id,
