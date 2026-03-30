@@ -10,7 +10,7 @@ interface JobApplicationServiceInterface
 {
 
     public function getJobApplicationList(array $filters, User $user);
-    public function createJobApplication(array $data, UploadedFile $resume);
+    public function createJobApplication(array $data);
 
     public function updateJobApplication(int $jobApplicationId, array $data, ?UploadedFile $resume);
 

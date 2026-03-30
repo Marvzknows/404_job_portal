@@ -23,9 +23,9 @@ class JobApplicationService implements JobApplicationServiceInterface
         $this->jobApplicationRepository = $jobApplicationRepository;
     }
 
-    public function createJobApplication(array $data, UploadedFile $resume)
+    public function createJobApplication(array $data)
     {
-        return DB::transaction(function () use ($data, $resume) {
+        return DB::transaction(function () use ($data) {
 
             $user = request()->user();
             if (!$user->jobSeeker) {
@@ -34,19 +34,53 @@ class JobApplicationService implements JobApplicationServiceInterface
                 ]);
             }
 
-            if ($this->jobApplicationRepository->findDuplicateApplication($user->jobSeeker->id, $data['job_listing_id'])) {
+            if ($this->jobApplicationRepository->findDuplicateApplication(
+                $user->jobSeeker->id,
+                $data['job_listing_id']
+            )) {
                 throw ValidationException::withMessages([
                     'job_listing_id' => ['You have already applied for this job.']
                 ]);
             }
 
-            $resumeFile = $this->fileRepository->store($resume, $user->id, 'resume');
+            $this->resumeValidation($data);
+
+            $resumeId = null;
+
+            // Upload new resume
+            if (isset($data['resume'])) {
+                $resumeFile = $this->fileRepository->store(
+                    $data['resume'],
+                    $user->id,
+                    'resume'
+                );
+
+                $resumeId = $resumeFile->id;
+            }
+
+            // Use existing resume
+            if (isset($data['resume_id'])) {
+                $existingFile = $this->fileRepository->findById($data['resume_id']);
+
+                if (!$existingFile) {
+                    throw ValidationException::withMessages([
+                        'resume_id' => ['The provided resume_id does not exist.']
+                    ]);
+                }
+
+                if ($existingFile->uploaded_by !== $user->id) {
+                    throw ValidationException::withMessages([
+                        'resume_id' => ['You are not authorized to use this resume.']
+                    ]);
+                }
+                $resumeId = $existingFile->id;
+            }
 
             $jobApplication = $this->jobApplicationRepository->createJobApplication([
                 'job_seeker_id' => $user->jobSeeker->id,
                 'job_listing_id' => $data['job_listing_id'],
                 'cover_letter' => $data['cover_letter'] ?? null,
-                'resume_id' => $resumeFile->id,
+                'resume_id' => $resumeId,
             ]);
 
             ActivityLogger::log(
@@ -59,6 +93,21 @@ class JobApplicationService implements JobApplicationServiceInterface
 
             return $jobApplication;
         });
+    }
+
+    private function resumeValidation(array $data)
+    {
+        if (isset($data['resume']) && isset($data['resume_id'])) {
+            throw ValidationException::withMessages([
+                'resume' => ['Provide either a new resume file or an existing resume_id, not both.']
+            ]);
+        }
+
+        if (!isset($data['resume']) && !isset($data['resume_id'])) {
+            throw ValidationException::withMessages([
+                'resume' => ['You must provide a resume file or select an existing one.']
+            ]);
+        }
     }
 
     public function updateJobApplication(int $jobApplicationId, array $data, ?UploadedFile $resume)
