@@ -31,6 +31,7 @@ class ShowJobListingListResource extends JsonResource
             'updated_at'  => $this->updated_at,
             'total_applicants' => $this->total_applicants,
             'is_applied'       => $this->jobApplications->isNotEmpty(),
+            'is_saved'   => $this->savedJobs->isNotEmpty(),
         ];
     }
 }

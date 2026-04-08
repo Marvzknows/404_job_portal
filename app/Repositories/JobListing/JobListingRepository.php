@@ -40,6 +40,9 @@ class JobListingRepository extends BaseRepository implements JobListingRepositor
                 // Only load the application row that belongs to the current job seeker
                 'jobApplications' => function ($q) use ($jobSeekerId) { // is_applied flag
                     $q->when($jobSeekerId, fn($q) => $q->where('job_seeker_id', $jobSeekerId));
+                },
+                'savedJobs' => function ($q) use ($jobSeekerId) {
+                    $q->when($jobSeekerId, fn($q) => $q->where('user_id', $jobSeekerId));
                 }
             ])
             ->withCount(['jobApplications as total_applicants'])
