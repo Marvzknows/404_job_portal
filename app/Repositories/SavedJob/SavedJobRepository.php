@@ -6,7 +6,7 @@ use App\Models\SavedJob;
 
 class SavedJobRepository implements SavedJobRepositoryInterface
 {
-    public function listSavedJobs(array $filters, int $userId)
+    public function listSavedJobs(array $filters, int $userId, $jobSeekerId)
     {
         $search = $filters['search'] ?? null;
         $dateFrom = $filters['date_from'] ?? null;
@@ -14,7 +14,12 @@ class SavedJobRepository implements SavedJobRepositoryInterface
         $perPage = min((int) ($filters['per_page'] ?? 15), 100);
 
         return SavedJob::query()
-            ->with('jobListing.employer')
+            ->with([
+                'jobListing.employer',
+                'jobListing.jobApplications' => function ($q) use ($jobSeekerId) {
+                    $q->where('job_seeker_id', $jobSeekerId);
+                }
+            ])
             ->whereHas('jobListing') // exclude soft-deleted listings
             ->where('user_id', $userId)
             ->when($search, function ($query) use ($search) {

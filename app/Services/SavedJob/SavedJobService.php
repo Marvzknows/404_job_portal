@@ -20,7 +20,10 @@ class SavedJobService implements SavedJobServiceInterface
 
     public function listSavedJobs(array $filters, int $userId)
     {
-        return $this->savedJobRepository->listSavedJobs($filters, $userId);
+        $user = request()->user();
+        $jobSeekerId = $user && $user->jobSeeker ? $user->jobSeeker->id : null;
+
+        return $this->savedJobRepository->listSavedJobs($filters, $userId, $jobSeekerId);
     }
 
     public function saveJob(int $userId, int $jobId)
