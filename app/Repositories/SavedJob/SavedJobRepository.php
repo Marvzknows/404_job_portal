@@ -15,7 +15,8 @@ class SavedJobRepository implements SavedJobRepositoryInterface
 
         return SavedJob::query()
             ->with([
-                'jobListing.employer',
+                // 'jobListing.employer',
+                'jobListing.employer.logo',
                 'jobListing.jobApplications' => function ($q) use ($jobSeekerId) {
                     $q->where('job_seeker_id', $jobSeekerId);
                 }
