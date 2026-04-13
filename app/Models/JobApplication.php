@@ -34,6 +34,23 @@ class JobApplication extends Model
 
     public function activityLogs()
     {
-        $this->hasMany(ActivityLog::class);
+        return $this->hasMany(ActivityLog::class);
+    }
+
+    public static function employerTotalApplication($employerId)
+    {
+        return self::whereHas('jobListing', function ($q) use ($employerId) {
+            $q->where('employer_id', $employerId);
+        })
+            ->whereNotIn('status', ['rejected', 'withdrawn'])
+            ->count();
+    }
+
+    public static function employerTotalStatusApplication($employerId, String $status)
+    {
+        return self::whereHas('jobListing', function ($q) use ($employerId) {
+            $q->where('employer_id', $employerId);
+        })->where('status', $status)
+            ->count();
     }
 }

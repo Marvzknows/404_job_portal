@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreEmployerProfile;
 use App\Http\Requests\UpdateEmployerProfileRequest;
 use App\Http\Resources\ShowEmployerProfileResource;
+use App\Models\JobApplication;
+use App\Models\JobListing;
 use App\Repositories\Employer\EmployerRepositoryInterface;
 use App\Services\Employer\EmployerServiceInterface;
 use Illuminate\Http\Request;
@@ -83,6 +85,27 @@ class EmployerController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Employer profile restored successfully'
+        ]);
+    }
+
+    public function dashboard(Request $request)
+    {
+        $employerId = $request->user()->employer->id;
+
+        if (!$employerId) {
+            return response()->json([
+                'active_jobs' => 0,
+                'total_applicants' => 0,
+                'pending_review' => 0,
+                'shortlisted' => 0,
+            ]);
+        }
+
+        return response()->json([
+            'active_jobs' => JobListing::activeForEmployer($employerId),
+            'total_applicants' => JobApplication::employerTotalApplication($employerId),
+            'pending_review' => JobApplication::employerTotalStatusApplication($employerId, 'pending'),
+            'shortlisted' => JobApplication::employerTotalStatusApplication($employerId, 'shortlisted'),
         ]);
     }
 }

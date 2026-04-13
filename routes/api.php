@@ -47,6 +47,7 @@ Route::middleware(['auth:sanctum', 'role:employer'])
     ->prefix('employer')
     ->group(function () {
 
+        Route::get('/dashboard/stats', [EmployerController::class, 'dashboard'])->name('employer.dashboard');
         Route::post('/create', [EmployerController::class, 'store'])->name('employer.store');
         Route::get('/{id}', [EmployerController::class, 'show'])->name('employer.show');
         Route::put('/{employerId}', [EmployerController::class, 'update'])->name('employer.update');
