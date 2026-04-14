@@ -53,4 +53,21 @@ class JobApplication extends Model
         })->where('status', $status)
             ->count();
     }
+
+    public static function jobSeekerTotalApplication($jobSeekerId)
+    {
+        return self::where('job_seeker_id', $jobSeekerId)
+            ->whereBetween('created_at', [
+                now()->subDays(7),
+                now()
+            ])
+            ->count();
+    }
+
+    public static function jobSeekerTotalStatusApplication(string $jobSeekerId, array $status)
+    {
+        return self::where('job_seeker_id', $jobSeekerId)
+            ->whereIn('status', $status)
+            ->count();
+    }
 }

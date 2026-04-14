@@ -75,6 +75,7 @@ Route::middleware(['auth:sanctum', 'role:job_seeker'])
     ->group(function () {
 
         // Job Seeker Routes
+        Route::get('/dashboard/stats', [JobSeekerController::class, 'dashboard'])->name('job_seeker.dashboard');
         Route::post('/', [JobSeekerController::class, 'store'])->name('job_seeker.store');
         Route::get('/{jobSeekerId}', [JobSeekerController::class, 'show'])->name('job_seeker.show');
         Route::put('/{jobSeekerId}', [JobSeekerController::class, 'update'])->name('job_seeker.update');

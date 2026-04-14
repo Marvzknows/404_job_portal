@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreJobSeekerProfileRequest;
 use App\Http\Requests\UpdateJobSeekerProfileResource;
 use App\Http\Resources\JobSeekerProfileResource;
+use App\Models\JobApplication;
+use App\Models\SavedJob;
 use App\Repositories\JobSeeker\JobSeekerRepositoryInterface;
 use App\Services\JobSeeker\JobSeekerServiceInterface;
 use Illuminate\Http\Request;
@@ -92,6 +94,28 @@ class JobSeekerController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Job seeker profile restored successfully',
+        ]);
+    }
+
+    public function dashboard(Request $request)
+    {
+        $user = $request->user();
+        $jobSeekerId = $user->jobSeeker->id ?? null;
+
+        if (!$user || !$jobSeekerId) {
+            return response()->json([
+                'total_applicants' => 0,
+                'pending_review' => 0,
+                'shortlisted_accepted' => 0,
+                'saved_jobs' => 0,
+            ]);
+        }
+
+        return response()->json([
+            'total_applicants' => JobApplication::jobSeekerTotalApplication($jobSeekerId),
+            'pending_review' => JobApplication::jobSeekerTotalStatusApplication($jobSeekerId, ['pending']),
+            'shortlisted_accepted' => JobApplication::jobSeekerTotalStatusApplication($jobSeekerId, ['shortlisted']),
+            'saved_jobs' => SavedJob::jobSeekerTotalApplication($user->id),
         ]);
     }
 }
