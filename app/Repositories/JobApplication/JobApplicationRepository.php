@@ -61,22 +61,37 @@ class JobApplicationRepository extends BaseRepository implements JobApplicationR
 
     public function getJobSeekerJobApplicationList(array $filters, int $jobSeekerId)
     {
-        $perPage = $filters['per_page'] ?? 15;
+        $perPage    = $filters['per_page'] ?? 15;
+        $status     = $filters['status'] ?? null;
+        $search     = $filters['search'] ?? null;
+        $job_type   = $filters['job_type'] ?? null;
+        $work_setup = $filters['work_setup'] ?? null;
 
-        $query = JobApplication::with(['jobSeeker.user', 'jobListing'])
-            ->where('job_seeker_id', $jobSeekerId);
-
-        if (!empty($filters['status'])) {
-            $query->where('status', $filters['status']);
-        }
-
-        if (!empty($filters['search'])) {
-            $query->whereHas('jobListing', function ($q) use ($filters) {
-                $q->where('title', 'like', '%' . $filters['search'] . '%');
-            });
-        }
-
-        return $query->latest()->paginate($perPage);
+        return JobApplication::with([
+            'jobSeeker.user',
+            'jobListing',
+            'jobListing.employer',
+            'jobListing.employer.logo'
+        ])
+            ->where('job_seeker_id', $jobSeekerId)
+            ->when($status, fn($q) => $q->where('status', $status))
+            ->when(
+                $search,
+                fn($q) =>
+                $q->whereHas('jobListing', fn($q2) => $q2->where('title', 'like', "%{$search}%"))
+            )
+            ->when(
+                $job_type,
+                fn($q) =>
+                $q->whereHas('jobListing', fn($q2) => $q2->where('job_type', $job_type))
+            )
+            ->when(
+                $work_setup,
+                fn($q) =>
+                $q->whereHas('jobListing', fn($q2) => $q2->where('work_setup', $work_setup))
+            )
+            ->latest()
+            ->paginate($perPage);
     }
     public function getAllJobApplications(array $filters)
     {

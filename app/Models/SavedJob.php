@@ -21,4 +21,10 @@ class SavedJob extends Model
     {
         return $this->belongsTo(JobListing::class);
     }
+
+    public static function jobSeekerTotalApplication(string $userId)
+    {
+        return self::where('user_id', $userId)
+            ->count();
+    }
 }

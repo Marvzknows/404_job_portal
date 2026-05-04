@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\SavedJobListResource;
 use App\Services\SavedJob\SavedJobServiceInterface;
 use Illuminate\Http\Request;
 
@@ -25,7 +26,8 @@ class SavedJobController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Saved Job retrieved successfully',
-            'data'    => $savedJobs
+            // 'data'    => $savedJobs
+            'data'    => SavedJobListResource::collection($savedJobs)->response()->getData()
         ]);
     }
 

@@ -24,7 +24,7 @@ class JobApplicationController extends Controller
 
     public function index(Request $request)
     {
-        $filters = $request->only(['search', 'status', 'per_page']);
+        $filters = $request->only(['search', 'status', 'per_page', 'job_type', 'work_setup']);
         $user = $request->user();
 
         $jobApplications = $this->jobApplicationService->getJobApplicationList($filters, $user);
@@ -39,9 +39,12 @@ class JobApplicationController extends Controller
     public function store(StoreJobApplicationRequest $request)
     {
         $validated = $request->validated();
-        $resume = $request->file('resume');
 
-        $this->jobApplicationService->createJobApplication($validated, $resume ?? null);
+        if ($request->hasFile('resume') && $request->file('resume')->isValid()) {
+            $validated['resume'] = $request->file('resume');
+        }
+
+        $this->jobApplicationService->createJobApplication($validated);
 
         return response()->json([
             'success' => true,

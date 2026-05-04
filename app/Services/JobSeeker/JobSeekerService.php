@@ -4,6 +4,7 @@ namespace App\Services\JobSeeker;
 
 use App\Repositories\File\FileRepositoryInterface;
 use App\Repositories\JobSeeker\JobSeekerRepositoryInterface;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -78,5 +79,22 @@ class JobSeekerService implements JobSeekerServiceInterface
             $newResume = $this->fileRepositoryInterface->store($resume, $user->id, 'resume');
             return $this->JobSeekerRepository->updateJobSeekerProfile(['resume_id' => $newResume->id], $jobSeekerId);
         });
+    }
+
+    public function deleteResume(int $userId, int $resumeId)
+    {
+        $resume = $this->fileRepositoryInterface->findById($resumeId);
+
+        if (!$resume) {
+            throw ValidationException::withMessages([
+                'resume' => 'Resume not found.',
+            ]);
+        }
+
+        if ($resume->uploaded_by !== $userId) {
+            throw new AuthorizationException('Forbidden.');
+        }
+
+        return $this->fileRepositoryInterface->delete($resume);
     }
 }

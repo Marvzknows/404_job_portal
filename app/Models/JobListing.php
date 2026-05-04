@@ -41,4 +41,11 @@ class JobListing extends Model
     {
         return $this->hasMany(SavedJob::class);
     }
+
+    public static function activeForEmployer($employerId)
+    {
+        return self::where('employer_id', $employerId)
+            ->where('status', 'open')
+            ->count();
+    }
 }

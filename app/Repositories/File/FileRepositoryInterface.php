@@ -9,7 +9,7 @@ interface FileRepositoryInterface
 {
     public function store(UploadedFile $file, int $uploadedBy, string $directory = 'public'): File;
 
-    public function findById(int $id);
+    public function findById(int $id): ?File;
 
     public function delete(File $file);
 

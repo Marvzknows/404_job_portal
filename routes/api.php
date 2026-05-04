@@ -39,6 +39,7 @@ Route::middleware([
         ->name('me');
     Route::post('/profile/avatar', [AuthController::class, 'updateAvatar'])->name('user.avatar');
     Route::post('/change-password', [AuthController::class, 'changePassword'])->name('user.changePassword');
+    Route::get('/resumes', [AuthController::class, 'getJobSeekerResume'])->name('user.resumes');
 });
 
 #region Employer routes
@@ -46,6 +47,7 @@ Route::middleware(['auth:sanctum', 'role:employer'])
     ->prefix('employer')
     ->group(function () {
 
+        Route::get('/dashboard/stats', [EmployerController::class, 'dashboard'])->name('employer.dashboard');
         Route::post('/create', [EmployerController::class, 'store'])->name('employer.store');
         Route::get('/{id}', [EmployerController::class, 'show'])->name('employer.show');
         Route::put('/{employerId}', [EmployerController::class, 'update'])->name('employer.update');
@@ -73,10 +75,12 @@ Route::middleware(['auth:sanctum', 'role:job_seeker'])
     ->group(function () {
 
         // Job Seeker Routes
+        Route::get('/dashboard/stats', [JobSeekerController::class, 'dashboard'])->name('job_seeker.dashboard');
         Route::post('/', [JobSeekerController::class, 'store'])->name('job_seeker.store');
         Route::get('/{jobSeekerId}', [JobSeekerController::class, 'show'])->name('job_seeker.show');
         Route::put('/{jobSeekerId}', [JobSeekerController::class, 'update'])->name('job_seeker.update');
-        Route::post('/{jobSeekerId}/resume', [JobSeekerController::class, 'updateResume'])->name('job_seeker.updateResume');
+        Route::post('/resume', [JobSeekerController::class, 'updateResume'])->name('job_seeker.updateResume');
+        Route::delete('/resume/{resumeId}', [JobSeekerController::class, 'deleteJobSeekerResume'])->name('job_seeker.deleteResume');
         // DELETE: '/{id}/delete (delete job seeker profile)
         Route::delete('/{jobSeekerId}', [JobSeekerController::class, 'destroy'])->name('job_seeker.destroy');
         // RESTORE: '/{id}/restore' (restore job seeker profile)

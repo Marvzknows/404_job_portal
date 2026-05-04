@@ -2,6 +2,7 @@
 
 namespace App\Services\Auth;
 
+use App\Helpers\ActivityLogger;
 use App\Models\User;
 use App\Repositories\Auth\UserRepositoryInterface;
 use App\Repositories\File\FileRepositoryInterface;
@@ -71,16 +72,21 @@ class AuthService implements AuthServiceInterface
 
     public function changePassword(array $data, User $user)
     {
-        if (!Hash::check($data['current_password'], $user->password)) {
-            throw new \InvalidArgumentException('Current password is incorrect.');
-        }
+        return DB::transaction(function () use ($data, $user) {
 
-        $updatedUser = $this->userRepositoryInterface->updateUser([
-            "password" => Hash::make($data['new_password'])
-        ], $user->id);
+            if (!Hash::check($data['current_password'], $user->password)) {
+                throw new \InvalidArgumentException('Current password is incorrect.');
+            }
 
-        $user->tokens()->delete();
+            $updatedUser = $this->userRepositoryInterface->updateUser([
+                "password" => Hash::make($data['new_password'])
+            ], $user->id);
 
-        return $updatedUser;
+            ActivityLogger::log($user->id, 'PASSWORD_CHANGED', 'Changed password', null, null);
+
+            $user->tokens()->delete();
+
+            return $updatedUser;
+        });
     }
 }

@@ -12,4 +12,6 @@ interface JobSeekerServiceInterface
     public function updateProfile(array $data, int $jobSeekerId);
 
     public function updateResume(UploadedFile $resume, int $jobSeekerId);
+
+    public function deleteResume(int $userId, int $resumeId);
 }

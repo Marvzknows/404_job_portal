@@ -6,7 +6,7 @@ use App\Models\ActivityLog;
 
 class ActivityLogRepository implements ActivityLogRepositoryInterface
 {
-    public function getActivityLogs(array $filters = [])
+    public function getActivityLogs(array $filters = [], int $userId)
     {
         $action = $filters['action'] ?? null;
 
@@ -18,7 +18,9 @@ class ActivityLogRepository implements ActivityLogRepositoryInterface
         $sortDirection = $filters['sort_dir'] ?? 'desc';
 
         return ActivityLog::query()
-            ->with('user', 'jobListing', 'jobApplication')
+            ->with('user', 'jobListing', 'jobApplication', 'jobApplication.jobListing')
+
+            ->where('user_id', $userId)
 
             ->when($action, function ($q) use ($action) {
                 $q->where('action', $action);

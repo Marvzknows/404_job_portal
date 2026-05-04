@@ -24,7 +24,8 @@ class StoreJobApplicationRequest extends FormRequest
         return [
             'job_listing_id' => 'required|exists:job_listings,id',
             'cover_letter' => 'nullable|string|min:8|max:255',
-            'resume' => 'required|file|mimes:pdf|max:2048',
+            'resume' => 'nullable|file|mimes:pdf|max:2048',
+            'resume_id' => 'nullable|exists:files,id',
         ];
     }
 }

@@ -56,6 +56,8 @@ class JobListingService implements JobListingServiceInterface
 
     public function jobListingList(array $filters = [], int | null $employerId = null)
     {
+        $user = request()->user();
+        $jobSeekerId = $user && $user->jobSeeker ? $user->jobSeeker->id : null;
         // $user = request()->user();
         // $allowedSortColumns = ['created_at', 'title', 'salary_min', 'salary_max'];
 
@@ -68,7 +70,7 @@ class JobListingService implements JobListingServiceInterface
         //     $employerId = $user->employer->id;
         // }
 
-        return $this->jobListingRepository->getPaginated($filters, $employerId ?? null);
+        return $this->jobListingRepository->getPaginated($filters, $employerId ?? null, $jobSeekerId);
     }
 
     private function authorizeEmployerJob(int $jobId)
