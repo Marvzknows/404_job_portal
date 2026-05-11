@@ -3,6 +3,7 @@
 namespace App\Services\Auth;
 
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
 
 interface AuthServiceInterface
 {
@@ -11,4 +12,10 @@ interface AuthServiceInterface
     public function login(array $data);
 
     public function logout(User $user);
+
+    public function me(User $user);
+
+    public function updateAvatar(UploadedFile $file, User $user);
+
+    public function changePassword(array $data, User $user);
 }

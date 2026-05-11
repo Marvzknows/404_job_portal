@@ -1,0 +1,17 @@
+<?php
+
+namespace App\Services\JobSeeker;
+
+use Illuminate\Http\UploadedFile;
+
+interface JobSeekerServiceInterface
+{
+
+    public function createProfile(array $data, UploadedFile|null $resume);
+
+    public function updateProfile(array $data, int $jobSeekerId);
+
+    public function updateResume(UploadedFile $resume, int $jobSeekerId);
+
+    public function deleteResume(int $userId, int $resumeId);
+}

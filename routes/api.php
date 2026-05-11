@@ -1,5 +1,12 @@
 <?php
 
+use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\EmployerController;
+use App\Http\Controllers\JobApplicationController;
+use App\Http\Controllers\JobController;
+use App\Http\Controllers\JobSeekerController;
+use App\Http\Controllers\SavedJobController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -12,6 +19,115 @@ Route::get('/test', function () {
 });
 
 // Authentication routes
-Route::post('/register', [App\Http\Controllers\Auth\AuthController::class, 'register']);
-Route::post('/login', [App\Http\Controllers\Auth\AuthController::class, 'login']);
-Route::post('/logout', [App\Http\Controllers\Auth\AuthController::class, 'logout'])->middleware('auth:sanctum');
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+
+#region Public Route
+Route::get('/jobs/list', [JobController::class, 'list'])->name('jobs.list');
+Route::get('/jobs/{jobId}', [JobController::class, 'show'])->name('jobs.show');
+
+#endregion
+
+Route::middleware([
+    'api',
+    'auth:sanctum',
+])->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])
+        ->name('logout');
+
+    Route::get('/me', [AuthController::class, 'me'])
+        ->name('me');
+    Route::post('/profile/avatar', [AuthController::class, 'updateAvatar'])->name('user.avatar');
+    Route::post('/change-password', [AuthController::class, 'changePassword'])->name('user.changePassword');
+    Route::get('/resumes', [AuthController::class, 'getJobSeekerResume'])->name('user.resumes');
+});
+
+#region Employer routes
+Route::middleware(['auth:sanctum', 'role:employer'])
+    ->prefix('employer')
+    ->group(function () {
+
+        Route::get('/dashboard/stats', [EmployerController::class, 'dashboard'])->name('employer.dashboard');
+        Route::post('/create', [EmployerController::class, 'store'])->name('employer.store');
+        Route::get('/{id}', [EmployerController::class, 'show'])->name('employer.show');
+        Route::put('/{employerId}', [EmployerController::class, 'update'])->name('employer.update');
+        Route::delete('/{employerId}', [EmployerController::class, 'destroy'])->name('employer.destroy');
+        Route::post('/{employerId}/logo', [EmployerController::class, 'updateLogo'])->name('employer.updateLogo');
+        Route::post('/{employerId}/restore', [EmployerController::class, 'restore'])->name('employer.restore');
+
+        #region Employer job management routes
+        Route::prefix('jobs')->group(function () {
+            Route::post('/', [JobController::class, 'store'])->name('jobs.store');
+            Route::get('/list', [JobController::class, 'index'])->name('jobs.index');
+            Route::get('/{job}', [JobController::class, 'show'])->name('jobs.show');
+            Route::put('/{job}', [JobController::class, 'update'])->name('jobs.update');
+            Route::delete('/{job}', [JobController::class, 'destroy'])->name('jobs.destroy');
+            Route::post('/{job}/restore', [JobController::class, 'restore'])->name('jobs.restore');
+            Route::put('/{job}/status', [JobController::class, 'status'])->name('jobs.status');
+        });
+        #endregion
+    });
+#endregion
+
+#region Job Seeker Routes
+Route::middleware(['auth:sanctum', 'role:job_seeker'])
+    ->prefix('job_seeker')
+    ->group(function () {
+
+        // Job Seeker Routes
+        Route::get('/dashboard/stats', [JobSeekerController::class, 'dashboard'])->name('job_seeker.dashboard');
+        Route::post('/', [JobSeekerController::class, 'store'])->name('job_seeker.store');
+        Route::get('/{jobSeekerId}', [JobSeekerController::class, 'show'])->name('job_seeker.show');
+        Route::put('/{jobSeekerId}', [JobSeekerController::class, 'update'])->name('job_seeker.update');
+        Route::post('/resume', [JobSeekerController::class, 'updateResume'])->name('job_seeker.updateResume');
+        Route::delete('/resume/{resumeId}', [JobSeekerController::class, 'deleteJobSeekerResume'])->name('job_seeker.deleteResume');
+        // DELETE: '/{id}/delete (delete job seeker profile)
+        Route::delete('/{jobSeekerId}', [JobSeekerController::class, 'destroy'])->name('job_seeker.destroy');
+        // RESTORE: '/{id}/restore' (restore job seeker profile)
+        Route::post('/{jobSeekerId}/restore', [JobSeekerController::class, 'restore'])->name('job_seeker.restore');
+    });
+#endregion
+
+#region Job Application Routes
+// (GENERAL)
+Route::middleware(['auth:sanctum'])
+    ->prefix('job-application')
+    ->group(function () {
+        Route::get('/', [JobApplicationController::class, 'index'])->name('job_application.index');
+        Route::get('/{jobApplicationId}', [JobApplicationController::class, 'show'])->name('job_application.show');
+        Route::put('/{jobApplicationId}/status', [JobApplicationController::class, 'updateStatus'])->name('job_application.updateStatus');
+    });
+
+// (JOB SEEKER)
+Route::middleware(['auth:sanctum', 'role:job_seeker'])
+    ->prefix('job-application')
+    ->group(function () {
+        Route::post('/', [JobApplicationController::class, 'store'])->name('job_application.store');
+        Route::put('/{jobApplicationId}', [JobApplicationController::class, 'update'])->name('job_application.update');
+        // DELETE: '/{applicationId}' (delete job application)'
+        Route::delete('/{jobApplicationId}', [JobApplicationController::class, 'destroy'])->name('job_application.destroy');
+        // POST: '/{applicationId}/restore' (restore deleted job application)
+        Route::post('/{jobApplicationId}/restore', [JobApplicationController::class, 'restore'])->name('job_application.restore');
+    });
+#endregion
+
+#region Activity Logs
+Route::middleware(['auth:sanctum'])
+    ->prefix('activity-log')
+    ->group(function () {
+        Route::get('/list', [ActivityLogController::class, 'list'])->name('activity_log.list');
+        // Route::post('/', [ActivityLogController::class, 'store'])->name('activity_log.store');
+        // Route::get('/{activityLogId}', [ActivityLogController::class, 'show'])->name('activity_log.show');
+        // Route::put('/{activityLogId}', [ActivityLogController::class, 'update'])->name('activity_log.update');
+    });
+#endregion
+
+#region Saved Jobs
+Route::middleware(['auth:sanctum', 'role:job_seeker'])
+    ->prefix('saved-jobs')
+    ->group(function () {
+        Route::get('/list', [SavedJobController::class, 'list'])->name('saved_jobs.list');
+        Route::post('/', [SavedJobController::class, 'store'])->name('saved_jobs.store');
+        Route::delete('/{savedJobId}', [SavedJobController::class, 'destroy'])->name('saved_jobs.destroy');
+    });
+#endregion

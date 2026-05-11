@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\JobListing;
+use App\Models\JobSeeker;
+use App\Models\File;
 
 class JobApplication extends Model
 {
@@ -11,7 +14,7 @@ class JobApplication extends Model
         'job_listing_id',
         'status',
         'cover_letter',
-        'resume',
+        'resume_id',
     ];
 
     public function jobSeeker()
@@ -22,5 +25,49 @@ class JobApplication extends Model
     public function jobListing()
     {
         return $this->belongsTo(JobListing::class);
+    }
+
+    public function resume()
+    {
+        return $this->belongsTo(File::class, 'resume_id');
+    }
+
+    public function activityLogs()
+    {
+        return $this->hasMany(ActivityLog::class);
+    }
+
+    public static function employerTotalApplication($employerId)
+    {
+        return self::whereHas('jobListing', function ($q) use ($employerId) {
+            $q->where('employer_id', $employerId);
+        })
+            ->whereNotIn('status', ['rejected', 'withdrawn'])
+            ->count();
+    }
+
+    public static function employerTotalStatusApplication($employerId, String $status)
+    {
+        return self::whereHas('jobListing', function ($q) use ($employerId) {
+            $q->where('employer_id', $employerId);
+        })->where('status', $status)
+            ->count();
+    }
+
+    public static function jobSeekerTotalApplication($jobSeekerId)
+    {
+        return self::where('job_seeker_id', $jobSeekerId)
+            ->whereBetween('created_at', [
+                now()->subDays(7),
+                now()
+            ])
+            ->count();
+    }
+
+    public static function jobSeekerTotalStatusApplication(string $jobSeekerId, array $status)
+    {
+        return self::where('job_seeker_id', $jobSeekerId)
+            ->whereIn('status', $status)
+            ->count();
     }
 }

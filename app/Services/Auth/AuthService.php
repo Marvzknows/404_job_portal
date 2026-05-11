@@ -2,16 +2,25 @@
 
 namespace App\Services\Auth;
 
+use App\Helpers\ActivityLogger;
+use App\Models\User;
 use App\Repositories\Auth\UserRepositoryInterface;
+use App\Repositories\File\FileRepositoryInterface;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 class AuthService implements AuthServiceInterface
 {
     private UserRepositoryInterface $userRepositoryInterface;
-    public function __construct(UserRepositoryInterface $userRepositoryInterface)
-    {
+    private FileRepositoryInterface $fileRepositoryInterface;
+    public function __construct(
+        UserRepositoryInterface $userRepositoryInterface,
+        FileRepositoryInterface $fileRepositoryInterface
+    ) {
         $this->userRepositoryInterface = $userRepositoryInterface;
+        $this->fileRepositoryInterface = $fileRepositoryInterface;
     }
 
 
@@ -44,5 +53,40 @@ class AuthService implements AuthServiceInterface
         } catch (\Exception $e) {
             return false;
         }
+    }
+
+    public function me($user)
+    {
+        $user = $this->userRepositoryInterface->getAuthenticatedUserWithProfile($user->id);
+        return $user;
+    }
+
+    public function updateAvatar(UploadedFile $file, User $user)
+    {
+        return DB::transaction(function () use ($file, $user) {
+
+            $newAvatar = $this->fileRepositoryInterface->store($file, $user->id, 'userAvatar');
+            return $this->userRepositoryInterface->updateUser(['avatar_id' => $newAvatar->id], $user->id);
+        });
+    }
+
+    public function changePassword(array $data, User $user)
+    {
+        return DB::transaction(function () use ($data, $user) {
+
+            if (!Hash::check($data['current_password'], $user->password)) {
+                throw new \InvalidArgumentException('Current password is incorrect.');
+            }
+
+            $updatedUser = $this->userRepositoryInterface->updateUser([
+                "password" => Hash::make($data['new_password'])
+            ], $user->id);
+
+            ActivityLogger::log($user->id, 'PASSWORD_CHANGED', 'Changed password', null, null);
+
+            $user->tokens()->delete();
+
+            return $updatedUser;
+        });
     }
 }
