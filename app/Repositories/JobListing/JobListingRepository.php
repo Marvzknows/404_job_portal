@@ -21,7 +21,7 @@ class JobListingRepository extends BaseRepository implements JobListingRepositor
         return JobListing::where('id', $jobId)->update($data);
     }
 
-    public function getPaginated(array $filters = [], int|null $employerId = null, int|null $jobSeekerId = null)
+    public function getPaginated(array $filters = [], int|null $employerId = null, int|null $jobSeekerId = null, int|null $userId = null)
     {
         $search         = $filters['search'] ?? null;
         $per_page       = $filters['per_page'] ?? 15;
@@ -37,12 +37,22 @@ class JobListingRepository extends BaseRepository implements JobListingRepositor
                 'employer',
                 'employer.logo',
                 'employer.user',
-                // Only load the application row that belongs to the current job seeker
+                // Only load the application row that belongs to the current job seeker.
+                // For guests (no job seeker) load nothing so is_applied stays false.
                 'jobApplications' => function ($q) use ($jobSeekerId) { // is_applied flag
-                    $q->when($jobSeekerId, fn($q) => $q->where('job_seeker_id', $jobSeekerId));
+                    $q->when(
+                        $jobSeekerId,
+                        fn($q) => $q->where('job_seeker_id', $jobSeekerId),
+                        fn($q) => $q->whereRaw('1 = 0')
+                    );
                 },
-                'savedJobs' => function ($q) use ($jobSeekerId) {
-                    $q->when($jobSeekerId, fn($q) => $q->where('user_id', $jobSeekerId));
+                // saved_jobs.user_id references users.id, so filter by the user id, not the job seeker id.
+                'savedJobs' => function ($q) use ($userId) {
+                    $q->when(
+                        $userId,
+                        fn($q) => $q->where('user_id', $userId),
+                        fn($q) => $q->whereRaw('1 = 0')
+                    );
                 }
             ])
             ->withCount(['jobApplications as total_applicants'])

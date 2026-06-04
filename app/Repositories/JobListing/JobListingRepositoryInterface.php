@@ -8,7 +8,7 @@ interface JobListingRepositoryInterface
 {
     public function create(array $data);
 
-    public function getPaginated(array $filters = [], int|null $employerId = null, int|null $jobSeekerId = null);
+    public function getPaginated(array $filters = [], int|null $employerId = null, int|null $jobSeekerId = null, int|null $userId = null);
 
     public function show(int $jobListingId): JobListing;
 

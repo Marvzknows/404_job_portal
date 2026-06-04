@@ -56,7 +56,12 @@ class JobListingService implements JobListingServiceInterface
 
     public function jobListingList(array $filters = [], int | null $employerId = null)
     {
-        $user = request()->user();
+        // Resolve via the sanctum guard explicitly: this route is public (no
+        // auth:sanctum middleware), so request()->user() uses the default guard
+        // and would be null for token-based API requests. Without a user the
+        // saved/applied filters below get skipped and the flags become global.
+        $user = request()->user('sanctum');
+        $userId = $user?->id;
         $jobSeekerId = $user && $user->jobSeeker ? $user->jobSeeker->id : null;
         // $user = request()->user();
         // $allowedSortColumns = ['created_at', 'title', 'salary_min', 'salary_max'];
@@ -70,7 +75,7 @@ class JobListingService implements JobListingServiceInterface
         //     $employerId = $user->employer->id;
         // }
 
-        return $this->jobListingRepository->getPaginated($filters, $employerId ?? null, $jobSeekerId);
+        return $this->jobListingRepository->getPaginated($filters, $employerId ?? null, $jobSeekerId, $userId);
     }
 
     private function authorizeEmployerJob(int $jobId)
